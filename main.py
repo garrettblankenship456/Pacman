@@ -1,13 +1,13 @@
 # Main file for the whole game
 
 # Imports
-from graphics3d import * # Allows 3d rendering
+from graphics import * # Allows 3d rendering
 import config # Imports the config options
 
 # Main function
 def main():
     # Initialize window
-    window = Window3d("PyCraft", config.WINDOW_WIDTH, config.WINDOW_HEIGHT)
+    window = GraphWin("Pacman", config.WINDOW_WIDTH, config.WINDOW_HEIGHT, autoflush=False)
 
     # Initialize scene objects
     
@@ -15,7 +15,7 @@ def main():
     # Main loop
     while True:
         # Controls
-        keys = window.window.checkKeys()
+        keys = window.checkKeys()
         # Exit loop if escape pressed
         if "Escape" in keys:
             break
@@ -24,10 +24,10 @@ def main():
 
 
         # Update window
-        window.update()
+        update()
 
     # Graceful exit
-    window.window.close()
+    window.close()
 
 
 # Call main function
