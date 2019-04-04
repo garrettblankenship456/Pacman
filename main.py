@@ -1,7 +1,7 @@
 # Main file for the whole game
 
 # Imports
-from graphics import * # Allows 3d rendering
+from graphics import * # 2d graphics library
 import config # Imports the config options
 
 # Main function
