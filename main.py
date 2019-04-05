@@ -1,13 +1,18 @@
 # Main file for the whole game
 
 # Imports
-from graphics import * # 2d graphics library
+from graphics import * # 2D graphics library
+from world import * # Get all the classes from the folder
 import config # Imports the config options
 
 # Main function
 def main():
     # Initialize window
     window = GraphWin("Pacman", config.WINDOW_WIDTH, config.WINDOW_HEIGHT, autoflush=False)
+
+    # Initialize world
+    world = World()
+    world.render(window)
 
     # Initialize scene objects
     
@@ -21,7 +26,7 @@ def main():
             break
 
         # Game logic
-
+        
 
         # Update window
         update()
