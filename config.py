@@ -1,3 +1,6 @@
 # Contains config options
 WINDOW_WIDTH = 400
 WINDOW_HEIGHT = 550
+
+MAP_RESOLUTION_X = 10
+MAP_RESOLUTION_Y = 10
