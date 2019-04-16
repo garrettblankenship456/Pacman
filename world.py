@@ -22,7 +22,7 @@ class World:
             if line == "mirror_true\n":
                 self.mirrored = True
             elif line.split(" ")[0] == "center_line":
-                self.lineOfSymmetry = int(line.split(" ")[1]) * config.MAP_RESOLUTION_X
+                self.lineOfSymmetry = float(line.split(" ")[1]) * config.MAP_RESOLUTION_X
             else:
                 # Get position and size points
                 positions = []
@@ -31,13 +31,13 @@ class World:
 
                 # Get XY from points
                 pointData = points[0].split(",")
-                xPos = int(pointData[0]) * config.MAP_RESOLUTION_X
-                yPos = int(pointData[1]) * config.MAP_RESOLUTION_Y
+                xPos = float(pointData[0]) * config.MAP_RESOLUTION_X
+                yPos = float(pointData[1]) * config.MAP_RESOLUTION_Y
 
                 # Get size from points
                 pointData = points[1].split(",")
-                xSize = int(pointData[0]) * config.MAP_RESOLUTION_X
-                ySize = int(pointData[1]) * config.MAP_RESOLUTION_Y
+                xSize = float(pointData[0]) * config.MAP_RESOLUTION_X
+                ySize = float(pointData[1]) * config.MAP_RESOLUTION_Y
 
                 # Create positions from pos and size
                 positions.append(Point(xPos, yPos))
