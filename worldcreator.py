@@ -12,6 +12,9 @@ def main():
     trace = Image(Point(config.WINDOW_WIDTH / 2, config.WINDOW_HEIGHT / 2), "photo11.png")
     trace.draw(window)
 
+    clickPoint = Rectangle(Point(0, 0), Point(10, 10))
+    clickPoint.setFill("white")
+    clickPoint.draw(window)
     cursor = Rectangle(Point(0, 0), Point(0, 0))
     cursor.setFill("white")
     cursor.draw(window)
@@ -35,6 +38,10 @@ def main():
 
         # Get click postitons
         pos = window.checkMouse()
+        clickPoint.undraw()
+        clickPoint = Rectangle(Point(window.getCurrentMouseLocation().getX() // config.MAP_RESOLUTION_X * config.MAP_RESOLUTION_X, window.getCurrentMouseLocation().getY() // config.MAP_RESOLUTION_Y * config.MAP_RESOLUTION_Y), Point(((window.getCurrentMouseLocation().getX() + config.MAP_RESOLUTION_X) // config.MAP_RESOLUTION_X * config.MAP_RESOLUTION_X), ((window.getCurrentMouseLocation().getY() + config.MAP_RESOLUTION_Y) // config.MAP_RESOLUTION_Y) * config.MAP_RESOLUTION_Y))
+        clickPoint.setFill("white")
+        clickPoint.draw(window)
         if pos != None:
             if pos1 == False:
                 pos1 = Point(pos.getX() // config.MAP_RESOLUTION_X, pos.getY() // config.MAP_RESOLUTION_Y)
@@ -66,9 +73,10 @@ def main():
         data += ","
         data += str(s.getP1().getY() // config.MAP_RESOLUTION_Y)
         data += " "
-        data += str((s.getP1().getX() - s.getP2().getX()) // config.MAP_RESOLUTION_X)
+        data += str((s.getP2().getX() - s.getP1().getX()) // config.MAP_RESOLUTION_X)
         data += ","
-        data += str((s.getP1().getY() - s.getP2().getY()) // config.MAP_RESOLUTION_Y)
+        data += str((s.getP2().getY() - s.getP1().getY()) // config.MAP_RESOLUTION_Y)
+        data += "\n"
         file.write(data)
     
 main()

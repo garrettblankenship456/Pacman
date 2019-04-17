@@ -1,6 +1,7 @@
 # World class, holds data for the world walls and angles
 from graphics import *
 import config
+from boundingbox import *
 
 class World:
     """World data and collision detection"""
@@ -8,11 +9,12 @@ class World:
         # Initialize data array
         self.worldData = []
         self.worldPolys = []
+        self.hitboxes = []
         self.mirrored = False
         self.lineOfSymmetry = 0
         
         # generate world data
-        self.__genWorldData("levels/default.txt")
+        self.__genWorldData("levels/pacman.txt")
 
     def __genWorldData(self, levelPath):
         # Creates all the world data from file
@@ -31,8 +33,8 @@ class World:
 
                 # Get XY from points
                 pointData = points[0].split(",")
-                xPos = float(pointData[0]) * config.MAP_RESOLUTION_X
-                yPos = float(pointData[1]) * config.MAP_RESOLUTION_Y
+                xPos = (float(pointData[0]) + config.MAP_OFFSET_X) * config.MAP_RESOLUTION_X
+                yPos = (float(pointData[1]) + config.MAP_OFFSET_Y) * config.MAP_RESOLUTION_Y
 
                 # Get size from points
                 pointData = points[1].split(",")
@@ -44,6 +46,9 @@ class World:
                 positions.append(Point(xPos + xSize, yPos))
                 positions.append(Point(xPos + xSize, yPos + ySize))
                 positions.append(Point(xPos, yPos + ySize))
+
+                # Create hitbox
+                self.hitboxes.append(BoundingBox(Point(xPos, yPos), Point(xSize, ySize)))
 
                 # Put array in world data
                 self.worldData.append(positions)
@@ -59,12 +64,27 @@ class World:
                     poly2.setFill("black")
                     self.worldPolys.append(poly2)
 
+                    # Create hitbox
+                    #self.hitboxes.append(BoundingBox(Point(self.lineOfSymmetry * 2 - xPos, yPos), Point(xSize, ySize)))
+
                 # Loop through each line and make a polygon from it
                 poly = Polygon(positions)
-                poly.setFill("black")
+                #poly.setFill("black")
                 self.worldPolys.append(poly)
 
     def render(self, window):
         """Draws world to the GraphWin given"""
         for poly in self.worldPolys:
             poly.draw(window)
+        for b in self.hitboxes:
+            b.debugDraw(window)
+
+    def isCollided(self, box):
+        """Checks if a point is in any rectangles"""
+        collision = False
+        for hitbox in self.hitboxes:
+            if BoundingBox.pointWithin(hitbox, box) == True:
+                collision = True
+                break
+
+        return collision
