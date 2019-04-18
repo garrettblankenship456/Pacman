@@ -5,6 +5,7 @@ from graphics import * # 2D graphics library
 from world import * # Get all the classes from the folder
 import config # Imports the config options
 from boundingbox import *
+from player import *
 
 # Main function
 def main():
@@ -17,11 +18,8 @@ def main():
 
     # Initialize scene objects
     # Player
-    player = Rectangle(Point(0, 0), Point(30, 30))
-    player.setFill("blue")
+    player = Player()
     player.draw(window)
-    player.move(config.WINDOW_WIDTH / 2 - 15, 675)
-    playerBox = BoundingBox(Point(config.WINDOW_WIDTH / 2 - 15, 675), Point(30, 30))
 
     # Main loop
     while True:
@@ -33,22 +31,22 @@ def main():
 
         # Player controls
         if "w" in keys:
-            player.move(0, -0.05)
-            playerBox.move(0, -0.05)
+            player.move('n')
         if "s" in keys:
-            player.move(0, 0.05)
-            playerBox.move(0, 0.05)
+            player.move('s')
         if "a" in keys:
-            player.move(-0.05, 0)
-            playerBox.move(-0.05, 0)
+            player.move('w')
         if "d" in keys:
-            player.move(0.05, 0)
-            playerBox.move(0.05, 0)
+            player.move('e')
 
         # Game logic
-        print(world.isCollided(playerBox))
+        if world.isCollided(player.boundingBox):
+            player.box.setFill("red")
+        else:
+            player.box.setFill("blue")
 
-        # Update window
+        # Update window and player
+        player.update(world)
         update()
 
     # Graceful exit

@@ -2,6 +2,7 @@
 from graphics import *
 import config
 from boundingbox import *
+import math
 
 class World:
     """World data and collision detection"""
@@ -14,7 +15,7 @@ class World:
         self.lineOfSymmetry = 0
         
         # generate world data
-        self.__genWorldData("levels/pacman.txt")
+        self.__genWorldData("levels/paths.txt")
 
     def __genWorldData(self, levelPath):
         # Creates all the world data from file
@@ -65,7 +66,7 @@ class World:
                     self.worldPolys.append(poly2)
 
                     # Create hitbox
-                    #self.hitboxes.append(BoundingBox(Point(self.lineOfSymmetry * 2 - xPos, yPos), Point(xSize, ySize)))
+                    self.hitboxes.append(BoundingBox(Point(self.lineOfSymmetry * 2 - xPos - xSize, yPos), Point(xSize, ySize)))
 
                 # Loop through each line and make a polygon from it
                 poly = Polygon(positions)
@@ -82,9 +83,23 @@ class World:
     def isCollided(self, box):
         """Checks if a point is in any rectangles"""
         collision = False
+        hb = None
         for hitbox in self.hitboxes:
             if BoundingBox.pointWithin(hitbox, box) == True:
                 collision = True
+                hb = hitbox
                 break
 
-        return collision
+        return collision, hb
+
+    def getClosest(self, position):
+        """Gets the closest hitbox to the position"""
+        closest = None
+        lastDist = 9999
+        for hitbox in self.hitboxes:
+            dist = math.hypot(hitbox.getCenter().getX() - position.getX(), hitbox.getCenter().getY() - position.getY())
+            if dist < lastDist:
+                closest = hitbox
+                lastDist = dist
+
+        return closest, dist

@@ -15,11 +15,15 @@ class BoundingBox:
         """Moves bounding box"""
         self.pos = Point(self.pos.getX() + x, self.pos.getY() + y)
 
-    def debugDraw(self, window):
+    def debugDraw(self, window, color = "red"):
         # Draws hitbox at the pos
         r = Rectangle(self.pos, Point(self.pos.getX() + self.size.getX(), self.pos.getY() + self.size.getY()))
-        r.setFill("red")
+        r.setFill(color)
         r.draw(window)
+
+    def getCenter(self):
+        """Returns the center"""
+        return Point(self.pos.getX() + (self.size.getX() / 2), self.pos.getY() + (self.size.getY() / 2))
 
     @staticmethod
     def pointWithin(box, box2):
