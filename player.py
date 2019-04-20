@@ -9,11 +9,12 @@ import math
 
 # Class defintion
 class Player:
-    def __init__(self, size = 30):
+    def __init__(self, size = 40):
         # Initialize variables
         self.images = ()
         self.box = Rectangle(Point(0, 0), Point(size, size))
         self.boundingBox = BoundingBox(Point(config.WINDOW_WIDTH / 2 - 15, 670), Point(size, size))
+        self.projectedBox = BoundingBox(Point(config.WINDOW_WIDTH / 2 - 15, 670), Point(size, size))
         self.direction = "none"
         self.movmentSpeed = 0.05
 
@@ -32,15 +33,36 @@ class Player:
 
     def update(self, world):
         """Updates the player"""
+        # Velocity projection
+        projected = [0, 0]
         if self.direction == 'n':
-            self.box.move(0, -self.movmentSpeed)
-            self.boundingBox.move(0, -self.movmentSpeed)
+            projected[0] = 0
+            projected[1] = -self.movmentSpeed
         if self.direction == 's':
-            self.box.move(0, self.movmentSpeed)
-            self.boundingBox.move(0, self.movmentSpeed)
+            projected[0] = 0
+            projected[1] = self.movmentSpeed
         if self.direction == 'e':
-            self.box.move(self.movmentSpeed, 0)
-            self.boundingBox.move(self.movmentSpeed, 0)
+            projected[0] = self.movmentSpeed
+            projected[1] = 0
         if self.direction == 'w':
-            self.box.move(-self.movmentSpeed, 0)
-            self.boundingBox.move(-self.movmentSpeed, 0)
+            projected[0] = -self.movmentSpeed
+            projected[1] = 0
+
+        # Get projected boundingbox
+        self.projectedBox.pos = Point(self.boundingBox.pos.getX() + projected[0] * 10, self.boundingBox.pos.getY() + projected[1] * 10)
+        print(self.projectedBox.pos)
+
+        # Check collision based on projected position
+        collision, box = world.isCollided(self.projectedBox)
+        if collision:
+            inside = BoundingBox.pointWithin(box, self.projectedBox)
+            print(inside)
+
+            # Check the new pos by the box
+            if inside:
+                projected[0] = 0
+                projected[1] = 0
+
+        # Move the box to the projected
+        self.box.move(projected[0], projected[1])
+        self.boundingBox.move(projected[0], projected[1])

@@ -13,9 +13,9 @@ class World:
         self.hitboxes = []
         self.mirrored = False
         self.lineOfSymmetry = 0
-        
+
         # generate world data
-        self.__genWorldData("levels/paths.txt")
+        self.__genWorldData("levels/pacman.txt")
 
     def __genWorldData(self, levelPath):
         # Creates all the world data from file

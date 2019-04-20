@@ -47,3 +47,24 @@ class BoundingBox:
             within = True
 
         return within
+
+    @staticmethod
+    def positionCheck(box, position):
+        """Returns true or false if a position is within the bounding box"""
+        within = False
+
+        # Box 1 positions
+        b1X = box.pos.getX()
+        b1Y = box.pos.getY()
+        b1xSize = box.size.getX()
+        b1ySize = box.size.getY()
+
+        # Box 2 positions
+        b2X = position.getX()
+        b2Y = position.getY()
+
+        # Check collision
+        if b2X < b1X + b1xSize and b2X > b1X and b2Y < b1Y + b1ySize and b2Y > b1Y:
+            within = True
+
+        return within
