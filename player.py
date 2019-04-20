@@ -54,12 +54,8 @@ class Player:
         # Check collision based on projected position
         collision, box = world.isCollided(self.projectedBox)
         if collision:
-            inside = BoundingBox.pointWithin(box, self.projectedBox)
-
-            # Check the new pos by the box
-            if inside:
-                projected[0] = 0
-                projected[1] = 0
+            projected[0] = 0
+            projected[1] = 0
 
         # Move the box to the projected
         self.box.move(projected[0], projected[1])
