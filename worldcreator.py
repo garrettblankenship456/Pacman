@@ -2,6 +2,7 @@
 from graphics import *
 import config
 import time
+from world import *
 
 # Main function
 def main():
@@ -25,6 +26,10 @@ def main():
 
     # Rectangles
     shapes = []
+
+    # World loading
+    w = World()
+    w.render(window)
 
     # Main loop
     while True:
@@ -78,5 +83,5 @@ def main():
         data += str((s.getP2().getY() - s.getP1().getY()) // config.MAP_RESOLUTION_Y)
         data += "\n"
         file.write(data)
-    
+
 main()

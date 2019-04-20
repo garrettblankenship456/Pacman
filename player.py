@@ -9,7 +9,7 @@ import math
 
 # Class defintion
 class Player:
-    def __init__(self, size = 40):
+    def __init__(self, size = 39):
         # Initialize variables
         self.images = ()
         self.box = Rectangle(Point(0, 0), Point(size, size))
