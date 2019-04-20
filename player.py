@@ -50,13 +50,11 @@ class Player:
 
         # Get projected boundingbox
         self.projectedBox.pos = Point(self.boundingBox.pos.getX() + projected[0] * 10, self.boundingBox.pos.getY() + projected[1] * 10)
-        print(self.projectedBox.pos)
 
         # Check collision based on projected position
         collision, box = world.isCollided(self.projectedBox)
         if collision:
             inside = BoundingBox.pointWithin(box, self.projectedBox)
-            print(inside)
 
             # Check the new pos by the box
             if inside:
