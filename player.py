@@ -124,6 +124,12 @@ class Player:
             if wCollision == False:
                 self.direction = self.nextDirection
 
+        # Teleport if needed
+        onTp = world.onTeleporter(self.projectedBox)
+        if onTp != False:
+            projected[0] = onTp.getX() - self.boundingBox.pos.getX()
+            projected[1] = onTp.getY() - self.boundingBox.pos.getY()
+
         # Update animation
         if self.lastFrameTime + self.animationDelay < time.time():
             self.frame = not self.frame

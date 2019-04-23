@@ -10,7 +10,7 @@ def main():
     window = GraphWin("Pacman world editor", config.WINDOW_WIDTH, config.WINDOW_HEIGHT, autoflush=False)
 
     # Draw trace image
-    trace = Image(Point(config.WINDOW_WIDTH / 2, config.WINDOW_HEIGHT / 2), "photo11.png")
+    trace = Image(Point(config.WINDOW_WIDTH / 2, config.WINDOW_HEIGHT / 2), "images/photo11.png")
     trace.draw(window)
 
     clickPoint = Rectangle(Point(0, 0), Point(10, 10))

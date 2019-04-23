@@ -11,6 +11,7 @@ class World:
         self.worldData = []
         self.worldPolys = []
         self.hitboxes = []
+        self.teleporters = [Point(10, 340.5), Point(620, 340.5), Point(620, 340.5), Point(10, 340.5)]
         self.mirrored = False
         self.lineOfSymmetry = 0
 
@@ -103,3 +104,12 @@ class World:
                 lastDist = dist
 
         return closest, dist
+
+    def onTeleporter(self, box):
+        """Checks if the box touches a teleporter"""
+        for i in range(0, len(self.teleporters), 2):
+            if BoundingBox.positionCheck(box, self.teleporters[i]):
+                return self.teleporters[i + 1]
+
+        # If not on any teleporters return false
+        return False
