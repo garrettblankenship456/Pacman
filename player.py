@@ -14,7 +14,8 @@ class Player:
         self.box = Rectangle(Point(0, 0), Point(size, size))
         self.boundingBox = BoundingBox(Point(config.WINDOW_WIDTH / 2 - 15, 670), Point(size, size))
         self.projectedBox = BoundingBox(Point(config.WINDOW_WIDTH / 2 - 15, 670), Point(size, size))
-        self.direction = "none"
+        self.direction = "e"
+        self.nextDirection = "e"
         self.movmentSpeed = 0.1
 
         # Animation variables
@@ -39,7 +40,7 @@ class Player:
     def move(self, direction):
         """Moves player direction"""
         # Get projection position and see if it collides
-        self.direction = direction
+        self.nextDirection = direction
 
     def update(self, window, world):
         """Updates the player"""
@@ -92,12 +93,36 @@ class Player:
 
         # Get projected boundingbox
         self.projectedBox.pos = Point(self.boundingBox.pos.getX() + projected[0], self.boundingBox.pos.getY() + projected[1])
+        northProjection = BoundingBox(Point(self.boundingBox.pos.getX(), self.boundingBox.pos.getY() - self.movmentSpeed * 10), self.boundingBox.size)
+        southProjection = BoundingBox(Point(self.boundingBox.pos.getX(), self.boundingBox.pos.getY() + self.movmentSpeed * 10), self.boundingBox.size)
+        eastProjection = BoundingBox(Point(self.boundingBox.pos.getX() + self.movmentSpeed * 10, self.boundingBox.pos.getY()), self.boundingBox.size)
+        westProjection = BoundingBox(Point(self.boundingBox.pos.getX() - self.movmentSpeed * 10, self.boundingBox.pos.getY()), self.boundingBox.size)
 
         # Check collision based on projected position
         collision, box = world.isCollided(self.projectedBox)
+        nCollision, box = world.isCollided(northProjection)
+        sCollision, box = world.isCollided(southProjection)
+        eCollision, box = world.isCollided(eastProjection)
+        wCollision, box = world.isCollided(westProjection)
+
         if collision:
+            # Zero out velocity
             projected[0] = 0
             projected[1] = 0
+
+        # Change to new direction
+        if self.nextDirection == "n":
+            if nCollision == False:
+                self.direction = self.nextDirection
+        elif self.nextDirection == "s":
+            if sCollision == False:
+                self.direction = self.nextDirection
+        elif self.nextDirection == "e":
+            if eCollision == False:
+                self.direction = self.nextDirection
+        elif self.nextDirection == "w":
+            if wCollision == False:
+                self.direction = self.nextDirection
 
         # Update animation
         if self.lastFrameTime + self.animationDelay < time.time():
