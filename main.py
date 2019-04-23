@@ -19,7 +19,6 @@ def main():
     # Initialize scene objects
     # Player
     player = Player()
-    player.draw(window)
 
     # Main loop
     while True:
@@ -46,7 +45,7 @@ def main():
             player.box.setFill("blue")
 
         # Update window and player
-        player.update(world)
+        player.update(window, world)
         update()
 
     # Graceful exit
