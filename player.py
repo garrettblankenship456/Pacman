@@ -12,8 +12,8 @@ class Player:
     def __init__(self, size = 39.5):
         # Initialize variables
         self.box = Rectangle(Point(0, 0), Point(size, size))
-        self.boundingBox = BoundingBox(Point(config.WINDOW_WIDTH / 2 - 15, 670), Point(size, size))
-        self.projectedBox = BoundingBox(Point(config.WINDOW_WIDTH / 2 - 15, 670), Point(size, size))
+        self.boundingBox = BoundingBox(Point(config.WINDOW_WIDTH / 2 - 15, 655), Point(size, size))
+        self.projectedBox = BoundingBox(Point(config.WINDOW_WIDTH / 2 - 15, 655), Point(size, size))
         self.direction = "e"
         self.nextDirection = "e"
         self.movmentSpeed = 0.1
@@ -29,9 +29,9 @@ class Player:
         self.lastFrameTime = time.time()
 
         # Move graphics box and setfill
-        self.box.move(config.WINDOW_WIDTH / 2 - 15, 670)
+        self.box.move(config.WINDOW_WIDTH / 2 - 15, 655)
         for p in self.images:
-            p.move(config.WINDOW_WIDTH / 2 - 15 + size / 2, 670 + size / 2)
+            p.move(config.WINDOW_WIDTH / 2 - 15 + size / 2, 655 + size / 2)
 
     def draw(self, window):
         """Draws player to the screen"""

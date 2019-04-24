@@ -17,6 +17,9 @@ class World:
         self.mirrored = False
         self.lineOfSymmetry = 0
 
+        # Decorator
+        self.background = Image(Point(config.WINDOW_WIDTH / 2, config.WINDOW_HEIGHT / 2), "images/background.png")
+
         # generate world data
         self.__genWorldData("levels/pacman.txt")
 
@@ -101,6 +104,9 @@ class World:
 
     def render(self, window):
         """Draws world to the GraphWin given"""
+        # Draw background image
+        self.background.draw(window)
+
         for poly in self.worldPolys:
             poly.draw(window)
         for b in self.hitboxes:
