@@ -6,6 +6,7 @@ from world import * # Get all the classes from the folder
 import config # Imports the config options
 from boundingbox import *
 from player import *
+import time
 
 # Main function
 def main():
