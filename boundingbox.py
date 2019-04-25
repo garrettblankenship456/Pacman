@@ -10,16 +10,16 @@ class BoundingBox:
         # Initialize variables
         self.pos = position
         self.size = size
+        self.r = Rectangle(self.pos, Point(self.pos.getX() + self.size.getX(), self.pos.getY() + self.size.getY()))
+        self.r.setFill("red")
 
     def move(self, x, y):
         """Moves bounding box"""
         self.pos = Point(self.pos.getX() + x, self.pos.getY() + y)
 
-    def debugDraw(self, window, color = "red"):
+    def debugDraw(self, window):
         # Draws hitbox at the pos
-        r = Rectangle(self.pos, Point(self.pos.getX() + self.size.getX(), self.pos.getY() + self.size.getY()))
-        r.setFill(color)
-        r.draw(window)
+        self.r.draw(window)
 
     def getCenter(self):
         """Returns the center"""

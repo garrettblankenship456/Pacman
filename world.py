@@ -12,7 +12,7 @@ class World:
         self.worldData = []
         self.worldPolys = []
         self.hitboxes = []
-        self.teleporters = [[BoundingBox(Point(-30, 340), Point(40, 40)), Point(590, 340.5)], [BoundingBox(Point(630, 340), Point(40, 40)), Point(10, 340.5)]]
+        self.teleporters = [[BoundingBox(Point(-30, 340), Point(40, 40)), Point(590, 325)], [BoundingBox(Point(630, 340), Point(40, 40)), Point(10, 325)]]
         self.squares = []
         self.mirrored = False
         self.lineOfSymmetry = 0
@@ -100,17 +100,17 @@ class World:
                 self.worldPolys.append(poly)
 
                 # Create points
-                #self.__genPointMap("levels/points.txt")
+                self.__genPointMap("levels/points.txt")
 
     def render(self, window):
         """Draws world to the GraphWin given"""
         # Draw background image
-        self.background.draw(window)
+        #self.background.draw(window)
 
         for poly in self.worldPolys:
             poly.draw(window)
-        for b in self.hitboxes:
-            b.debugDraw(window)
+        #for b in self.hitboxes:
+            #b.debugDraw(window)
         for s in self.squares:
             s.draw(window)
 

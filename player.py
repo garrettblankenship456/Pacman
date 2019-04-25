@@ -42,7 +42,7 @@ class Player:
         # Get projection position and see if it collides
         self.nextDirection = direction
 
-    def update(self, window, world):
+    def update(self, window, world, deltaTime):
         """Updates the player"""
         # Undraw images
         for p in self.images:
@@ -91,12 +91,25 @@ class Player:
             else:
                 self.images[4].draw(window)
 
+        # Get normalized movement
+        X = 0
+        Y = 0
+        if projected[0] > 0:
+            X = 0.1
+        elif projected[0] < 0:
+            X = -0.1
+
+        if projected[1] > 0:
+            Y = -0.1
+        elif projected[1] < 0:
+            Y = 0.1
+
         # Get projected boundingbox
         self.projectedBox.pos = Point(self.boundingBox.pos.getX() + projected[0], self.boundingBox.pos.getY() + projected[1])
-        northProjection = BoundingBox(Point(self.boundingBox.pos.getX(), self.boundingBox.pos.getY() - self.movmentSpeed * 10), self.boundingBox.size)
-        southProjection = BoundingBox(Point(self.boundingBox.pos.getX(), self.boundingBox.pos.getY() + self.movmentSpeed * 10), self.boundingBox.size)
-        eastProjection = BoundingBox(Point(self.boundingBox.pos.getX() + self.movmentSpeed * 10, self.boundingBox.pos.getY()), self.boundingBox.size)
-        westProjection = BoundingBox(Point(self.boundingBox.pos.getX() - self.movmentSpeed * 10, self.boundingBox.pos.getY()), self.boundingBox.size)
+        northProjection = BoundingBox(Point(self.boundingBox.pos.getX(), self.boundingBox.pos.getY() - 1), self.boundingBox.size)
+        southProjection = BoundingBox(Point(self.boundingBox.pos.getX(), self.boundingBox.pos.getY() + 1), self.boundingBox.size)
+        eastProjection = BoundingBox(Point(self.boundingBox.pos.getX() + 1, self.boundingBox.pos.getY()), self.boundingBox.size)
+        westProjection = BoundingBox(Point(self.boundingBox.pos.getX() - 1, self.boundingBox.pos.getY()), self.boundingBox.size)
 
         # Check collision based on projected position
         collision, box = world.isCollided(self.projectedBox)
@@ -131,7 +144,13 @@ class Player:
             projected[1] = onTp.getY() - self.boundingBox.pos.getY()
 
         # Handle points
-
+        for p in world.squares:
+            onPoint = p.update(self.boundingBox)
+            if onPoint != False:
+                #print("Got point")
+                p.box.undraw()
+                world.squares.remove(p)
+                break
 
         # Update animation only if the player hasnt collided with anything
         if self.lastFrameTime + self.animationDelay < time.time() and collision == False:
