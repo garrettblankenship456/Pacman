@@ -105,7 +105,7 @@ class Player:
             Y = 0.1
 
         # Get projected boundingbox
-        self.projectedBox.pos = Point(self.boundingBox.pos.getX() + projected[0], self.boundingBox.pos.getY() + projected[1])
+        self.projectedBox.pos = Point(self.boundingBox.pos.getX() - X, self.boundingBox.pos.getY() - Y)
         northProjection = BoundingBox(Point(self.boundingBox.pos.getX(), self.boundingBox.pos.getY() - 1), self.boundingBox.size)
         southProjection = BoundingBox(Point(self.boundingBox.pos.getX(), self.boundingBox.pos.getY() + 1), self.boundingBox.size)
         eastProjection = BoundingBox(Point(self.boundingBox.pos.getX() + 1, self.boundingBox.pos.getY()), self.boundingBox.size)
@@ -120,8 +120,8 @@ class Player:
 
         if collision:
             # Zero out velocity
-            projected[0] = 0
-            projected[1] = 0
+            projected[0] = X
+            projected[1] = Y
 
         # Change to new direction
         if self.nextDirection == "n":
@@ -133,9 +133,13 @@ class Player:
         elif self.nextDirection == "e":
             if eCollision == False:
                 self.direction = self.nextDirection
+            else:
+                projected[0] = -X
         elif self.nextDirection == "w":
             if wCollision == False:
                 self.direction = self.nextDirection
+            else:
+                projected[0] = -X
 
         # Teleport if needed
         onTp = world.onTeleporter(self.projectedBox)
@@ -144,13 +148,13 @@ class Player:
             projected[1] = onTp.getY() - self.boundingBox.pos.getY()
 
         # Handle points
-        for p in world.squares:
+        """for p in world.squares:
             onPoint = p.update(self.boundingBox)
             if onPoint != False:
                 #print("Got point")
                 p.box.undraw()
                 world.squares.remove(p)
-                break
+                break"""
 
         # Update animation only if the player hasnt collided with anything
         if self.lastFrameTime + self.animationDelay < time.time() and collision == False:

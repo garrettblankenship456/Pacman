@@ -111,8 +111,8 @@ class World:
             poly.draw(window)
         #for b in self.hitboxes:
             #b.debugDraw(window)
-        for s in self.squares:
-            s.draw(window)
+        #for s in self.squares:
+            #s.draw(window)
 
     def isCollided(self, box):
         """Checks if a point is in any rectangles"""
