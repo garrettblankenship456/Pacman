@@ -17,6 +17,7 @@ class Player:
         self.direction = "e"
         self.nextDirection = "e"
         self.movmentSpeed = 0.1
+        self.score = 0
 
         # Animation variables
         self.images = (Image(Point(0, 0), "images/directions/center.png"),
@@ -95,9 +96,9 @@ class Player:
         X = 0
         Y = 0
         if projected[0] > 0:
-            X = 0.1
-        elif projected[0] < 0:
             X = -0.1
+        elif projected[0] < 0:
+            X = 0.1
 
         if projected[1] > 0:
             Y = -0.1
@@ -133,13 +134,9 @@ class Player:
         elif self.nextDirection == "e":
             if eCollision == False:
                 self.direction = self.nextDirection
-            else:
-                projected[0] = -X
         elif self.nextDirection == "w":
             if wCollision == False:
                 self.direction = self.nextDirection
-            else:
-                projected[0] = -X
 
         # Teleport if needed
         onTp = world.onTeleporter(self.projectedBox)
@@ -157,7 +154,7 @@ class Player:
                 break"""
 
         # Update animation only if the player hasnt collided with anything
-        if self.lastFrameTime + self.animationDelay < time.time() and collision == False:
+        if self.lastFrameTime + self.animationDelay < time.time():
             self.frame = not self.frame
             self.lastFrameTime = time.time()
 

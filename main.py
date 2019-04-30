@@ -6,6 +6,7 @@ from world import * # Get all the classes from the folder
 import config # Imports the config options
 from boundingbox import *
 from player import *
+from ghost import *
 import time
 
 # Main function
@@ -25,6 +26,9 @@ def main():
     lastTime = time.time()
     deltaTime = 0
 
+    # Create ghosts
+    g = Ghost("blinky", Point(config.WINDOW_WIDTH / 2, config.WINDOW_HEIGHT / 2 - 25))
+
     # Main loop
     while True:
         # Controls
@@ -33,6 +37,7 @@ def main():
         if "Escape" in keys:
             window.close()
             break
+        g.moveGhost("e", window, world, player.boundingBox.pos)
 
         # Player controls
         if "w" in keys:
