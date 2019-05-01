@@ -13,6 +13,7 @@ import time
 def main():
     # Initialize window
     window = GraphWin("Pacman", config.WINDOW_WIDTH, config.WINDOW_HEIGHT, autoflush=False)
+    window.setBackground("white")
 
     # Initialize world
     world = World()
