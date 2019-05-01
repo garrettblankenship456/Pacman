@@ -23,47 +23,54 @@ class Grid:
     def pathFind(self, startNode, endNode, window = None):
         """Path finds from one node to another"""
         # Create nodes around the startNode and select the one with the lowest value
-        pathList = []
-        evaluated = []
-        nextNode = Node(startNode.gridX, startNode.gridY, 0, 0)
+        openNodes = [startNode]
+        closedNodes = []
+        reached = False
 
         # Keep running until target is found
-        while True:
-            nodesAround = nextNode.generateNodeMatrix()
-            fValues = []
-            for node in nodesAround:
-                node.calculateGH(startNode, endNode)
-                fValues.append(node.getF())
+        while reached == False:
+            # Get node with lowest F
+            lowestNode = openNodes[0]
+            lowestF = lowestNode.getF(startNode, endNode)
+            for node in openNodes:
+                currF = node.getF(startNode, endNode)
+                if currF < lowestF:
+                    lowestF = currF
+                    lowestNode = node
 
-            # Continue to the next one
-            lowestVal = fValues[0]
-            nextNode = nodesAround[0]
-            for i in range(1, len(fValues)):
-                if fValues[i] < lowestVal:
-                    if not nodesAround[i] in evaluated:
-                        nextNode = nodesAround[i]
-                        lowestVal = fValues[i]
-                        evaluated.append(nextNode)
+            r = Rectangle(Point(lowestNode.gridX * self.xScale, lowestNode.gridY * self.yScale), Point(lowestNode.gridX * self.xScale + self.xScale, lowestNode.gridY * self.yScale + self.yScale))
+            r.setOutline("blue")
+            r.draw(window)
 
-            # Create rectangle for the lowest value
-            if window != None:
-                for n in nodesAround:
-                    r = Rectangle(Point(n.gridX * self.xScale, n.gridY * self.yScale), Point(n.gridX * self.xScale + self.xScale, n.gridY * self.yScale + self.yScale))
-                    if nextNode == n:
-                        r.setFill("green")
-                    else:
-                        r.setFill("blue")
-                    if n in evaluated:
-                        r.setFill("yellow")
-                    r.draw(window)
-
-            # End loop once target has been found
-            print(lowestVal)
-            if lowestVal == 0:
-                print("Target found!")
+            # Check if destination reached
+            if lowestNode == endNode:
+                print("Destination reached")
                 break
+            else:
+                closedNodes.append(lowestNode)
 
-            sleep(1)
+                # Go through all its neighbors
+                neighbors = lowestNode.generateNodeMatrix()
+                lowestG = lowestNode.g
+                for neighbor in neighbors:
+                    neighbor.calculateGH(startNode, endNode)
+
+                    r = Rectangle(Point(neighbor.gridX * self.xScale, neighbor.gridY * self.yScale),
+                                  Point(neighbor.gridX * self.xScale + self.xScale,
+                                        neighbor.gridY * self.yScale + self.yScale))
+                    r.setOutline("green")
+                    r.draw(window)
+                    neighbor.getF(startNode, endNode, window)
+
+                    if neighbor.g < lowestG and neighbor in closedNodes:
+                        lowestG = neighbor.g
+                        neighbor.parent = lowestNode
+                        continue
+                    elif lowestG < neighbor.g and neighbor in openNodes:
+                        neighbor.parent = lowestNode
+                        continue
+                    elif not neighbor in openNodes and not neighbor in closedNodes:
+                        openNodes.append(neighbor)
 
     def drawNodes(self, window):
         """Debug function to draw all the nodes to the window"""

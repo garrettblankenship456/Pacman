@@ -1,5 +1,9 @@
 # Node class
 
+# Imports
+from graphics import *
+
+# Class definition
 class Node:
     """Creates a node for finding paths"""
     def __init__(self, gridX, gridY, realPosX, realPosY):
@@ -15,17 +19,25 @@ class Node:
         self.h = 0
         self.f = 0
 
-    def calculateGH(self, startNode, targetNode):
+        # Stuff to hold values
+        self.fValText = Text(Point(self.gridX * 40 + 20, self.gridY * 40 + 20), "NULL")
+
+    def calculateGH(self, startNode, targetNode, window = None):
         """Calculates G value and H value to the targetNode and back"""
-        dist2Self = ((startNode.gridX - self.gridX) ** 2 + (startNode.gridY - self.gridY) ** 2) ** (1/2)
-        dist2Target = ((targetNode.gridX - self.gridX) ** 2 + (targetNode.gridY - self.gridY) ** 2) ** (1/2)
+        dist2Self = abs(self.gridX - startNode.gridX) + abs(self.gridY - startNode.gridY)
+        dist2Target = abs(self.gridX - targetNode.gridX) + abs(self.gridY - targetNode.gridY)
         self.g = dist2Self
         self.h = dist2Target
-        print("G:", self.g)
-        print("H:", self.h)
+        self.fValText.setText(str(round(self.getF())))
 
-    def getF(self):
+        # Draw if window was supplied
+        if window != None:
+            self.fValText.draw(window)
+
+    def getF(self, startNode = None, endNode = None, window = None):
         """Returns F value"""
+        if startNode != None and endNode != None: self.calculateGH(startNode, endNode, window)
+
         return self.g + self.h
 
     def generateNodeMatrix(self):
@@ -40,3 +52,15 @@ class Node:
 
         # Return list
         return nodeList
+
+    def __str__(self):
+        data = "X: "
+        data += str(self.gridX)
+        data += ", Y: "
+        data += str(self.gridY)
+        data += ", G: "
+        data += str(self.g)
+        data += ", H: "
+        data += str(self.h)
+        data += "\n"
+        return data

@@ -18,7 +18,7 @@ class World:
         self.lineOfSymmetry = 0
 
         # Decorator
-        self.background = Image(Point(config.WINDOW_WIDTH / 2, config.WINDOW_HEIGHT / 2), "images/background.png")
+        self.background = Image(Point(config.WINDOW_WIDTH / 2, config.WINDOW_HEIGHT / 2 - 18), "images/background.png")
 
         # generate world data
         self.__genWorldData("levels/pacman.txt")
@@ -105,7 +105,7 @@ class World:
     def render(self, window):
         """Draws world to the GraphWin given"""
         # Draw background image
-        #self.background.draw(window)
+        self.background.draw(window)
 
         for poly in self.worldPolys:
             poly.draw(window)
