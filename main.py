@@ -62,10 +62,10 @@ def main():
 
         # Enemy path finding
         #  Get grid pos of the player
-        plyGridX = int((player.boundingBox.pos.getX() + 5) // 20)
-        plyGridY = int((player.boundingBox.pos.getY() - 10) // 20)
-        ghostGridX = int((g.boundingBox.pos.getX() + 5) // 20)
-        ghostGridY = int((g.boundingBox.pos.getY() + 5) // 20)
+        plyGridX = int((player.boundingBox.pos.getX()) // 20)
+        plyGridY = int((player.boundingBox.pos.getY() - 5) // 20)
+        ghostGridX = int((g.boundingBox.pos.getX()) // 20)
+        ghostGridY = int((g.boundingBox.pos.getY() - 5) // 20)
         path = world.nodeGrid.pathFind(world.nodeGrid.nodeList[ghostGridX][ghostGridY], world.nodeGrid.nodeList[plyGridX][plyGridY])
 
         #g.moveGhost("e", window, world, Point(path[len(path) - 2].realPosX, path[len(path) - 2].realPosY))

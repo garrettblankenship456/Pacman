@@ -22,11 +22,11 @@ class World:
         # Decorator
         self.background = Image(Point(config.WINDOW_WIDTH / 2, config.WINDOW_HEIGHT / 2 - 18), "images/background.png")
 
-        # generate world data
-        self.__genWorldData("levels/pacman.txt")
-
         # Generate grid
         self.nodeGrid = Grid(0, -5, 20, 20, 35, 35)
+
+        # generate world data
+        self.__genWorldData("levels/pacman.txt")
 
     def __genPointMap(self, pointPath):
         """Reads the positions of all the points"""
@@ -83,7 +83,7 @@ class World:
                 self.hitboxes.append(BoundingBox(Point(xPos, yPos), Point(xSize, ySize)))
 
                 # Set the wall on the nav grid
-                #self.nodeGrid
+                #self.nodeGrid.setWall(int(xPos // 20), int((yPos - 5) // 20), True)
 
                 # Put array in world data
                 self.worldData.append(positions)
