@@ -54,6 +54,21 @@ class Node:
         # Return list
         return nodeList
 
+    def getNeighbors(self, nodeList):
+        """Gets the neighbors of the nodes"""
+        neighbors = []
+        neighbors.append(nodeList[self.gridX - 1][self.gridY - 1])
+        neighbors.append(nodeList[self.gridX][self.gridY - 1])
+        neighbors.append(nodeList[self.gridX + 1][self.gridY - 1])
+
+        neighbors.append(nodeList[self.gridX - 1][self.gridY])
+        neighbors.append(nodeList[self.gridX + 1][self.gridY])
+
+        neighbors.append(nodeList[self.gridX - 1][self.gridY + 1])
+        neighbors.append(nodeList[self.gridX][self.gridY + 1])
+        neighbors.append(nodeList[self.gridX + 1][self.gridY + 1])
+        return neighbors
+
     def isWall(self, nodeList):
         """Sets the node to be a wall if it matches any walls in the list"""
         for node in nodeList:

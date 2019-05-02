@@ -9,13 +9,22 @@ import random
 # Class definition
 class Grid:
     """Holds all the nodes of the map"""
-    def __init__(self, xPos, yPos, xScale, yScale):
+    def __init__(self, xPos, yPos, xScale, yScale, xExtents, yExtents):
         # Initialize variables
         self.xPos = xPos
         self.yPos = yPos
         self.xScale = xScale
         self.yScale = yScale
         self.nodeList = []
+
+        # Populate node list
+        for i in range(xExtents):
+            # Create x array
+            self.nodeList.append([])
+
+            # For every y in the x array
+            for k in range(yExtents):
+                self.nodeList[i].append(Node(i, k, i * self.xScale, k * self.yScale))
 
     def addNode(self, node):
         """Adds node to the nodelist"""
@@ -62,7 +71,7 @@ class Grid:
                 break
             else:
                 # Go through all its neighbors
-                neighbors = lowestNode.generateNodeMatrix()
+                neighbors = lowestNode.getNeighbors(self.nodeList)
                 for neighbor in neighbors:
                     # Ignore if closed
                     if neighbor in closedNodes or neighbor.wall == True:
@@ -73,19 +82,21 @@ class Grid:
                         print("this shouldnt happen")
                     else:
                         openNodes.append(neighbor)
-                        openNodes[len(openNodes) - 1].calculateGH(startNode, endNode, window)
+                        openNodes[len(openNodes) - 1].calculateGH(startNode, endNode)
 
                     # Update it if its a quicker path (later only if needed)
 
-            sleep(0.1)
-
+    def setWall(self, x, y, isWall = True):
+        """Sets if the node is wall"""
+        self.nodeList[x][y].wall = isWall
 
     def drawNodes(self, window):
         """Debug function to draw all the nodes to the window"""
-        for node in self.nodeList:
-            r = Rectangle(Point(node.gridX * self.xScale, node.gridY * self.yScale), Point(node.gridX * self.xScale + self.xScale, node.gridY * self.yScale + self.yScale))
-            r.setFill("red")
-            r.draw(window)
+        for nodeLine in self.nodeList:
+            for node in nodeLine:
+                r = Rectangle(Point(node.gridX * self.xScale, node.gridY * self.yScale), Point(node.gridX * self.xScale + self.xScale, node.gridY * self.yScale + self.yScale))
+                r.setFill("red")
+                r.draw(window)
 
     def drawGrid(self, max, window):
         """Debug function to draw all the grid lines"""
