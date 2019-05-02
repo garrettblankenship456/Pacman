@@ -4,6 +4,8 @@ import config
 from boundingbox import *
 import math
 from point import *
+from pathfinding.grid import *
+from pathfinding.node import *
 
 class World:
     """World data and collision detection"""
@@ -22,6 +24,9 @@ class World:
 
         # generate world data
         self.__genWorldData("levels/pacman.txt")
+
+        # Generate grid
+        self.nodeGrid = Grid(0, -5, 20, 20, 35, 35)
 
     def __genPointMap(self, pointPath):
         """Reads the positions of all the points"""
@@ -77,6 +82,9 @@ class World:
                 # Create hitbox
                 self.hitboxes.append(BoundingBox(Point(xPos, yPos), Point(xSize, ySize)))
 
+                # Set the wall on the nav grid
+                #self.nodeGrid
+
                 # Put array in world data
                 self.worldData.append(positions)
 
@@ -107,10 +115,13 @@ class World:
         # Draw background image
         self.background.draw(window)
 
-        for poly in self.worldPolys:
-            poly.draw(window)
-        #for b in self.hitboxes:
-            #b.debugDraw(window)
+        # Draw nav nodes
+        self.nodeGrid.drawGrid(window)
+
+        #for poly in self.worldPolys:
+        #    poly.draw(window)
+        for b in self.hitboxes:
+            b.debugDraw(window)
         #for s in self.squares:
             #s.draw(window)
 

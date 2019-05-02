@@ -3,7 +3,7 @@
 # Imports
 from graphics import *
 from time import sleep
-from node import *
+from pathfinding.node import *
 import random
 
 # Class definition
@@ -15,6 +15,8 @@ class Grid:
         self.yPos = yPos
         self.xScale = xScale
         self.yScale = yScale
+        self.xExtents = xExtents
+        self.yExtents = yExtents
         self.nodeList = []
 
         # Populate node list
@@ -56,18 +58,21 @@ class Grid:
                 i += 1
 
             # Debug statements
-            r = Rectangle(Point(lowestNode.gridX * self.xScale, lowestNode.gridY * self.yScale), Point(lowestNode.gridX * self.xScale + self.xScale, lowestNode.gridY * self.yScale + self.yScale))
-            r.setFill("blue")
-            r.draw(window)
+            if window != None:
+                r = Rectangle(Point(lowestNode.gridX * self.xScale, lowestNode.gridY * self.yScale), Point(lowestNode.gridX * self.xScale + self.xScale, lowestNode.gridY * self.yScale + self.yScale))
+                r.setFill("blue")
+                r.draw(window)
 
             # Switch the node from open to closed
             openNodes.pop(lowestIndex)
             closedNodes.append(lowestNode)
 
             # Check if destination reached
-            if lowestNode.gridX == endNode.gridX and lowestNode.gridY == endNode.gridY:
-                print("Destination reached")
+            neighbors = endNode.getNeighbors(self.nodeList)
+            if lowestNode in neighbors:
                 reached = True
+                closedNodes.reverse()
+                return closedNodes
                 break
             else:
                 # Go through all its neighbors
@@ -98,17 +103,17 @@ class Grid:
                 r.setFill("red")
                 r.draw(window)
 
-    def drawGrid(self, max, window):
+    def drawGrid(self, window):
         """Debug function to draw all the grid lines"""
         # X line grid dividers
         xLines = []
-        for i in range(max):
-            xLines.append(Line(Point(i * self.xScale + self.xPos, self.yPos), Point(i * self.xScale + self.xPos, self.yPos + self.yScale * max)))
+        for i in range(self.xExtents):
+            xLines.append(Line(Point(i * self.xScale + self.xPos, self.yPos), Point(i * self.xScale + self.xPos, self.yPos + self.yScale * self.xExtents)))
 
         # Y line grid dividers
         yLines = []
-        for i in range(max):
-            yLines.append(Line(Point(self.xPos, i * self.yScale + self.yPos), Point(self.xPos + self.xScale * max, i * self.yScale + self.yPos)))
+        for i in range(self.yExtents):
+            yLines.append(Line(Point(self.xPos, i * self.yScale + self.yPos), Point(self.xPos + self.xScale * self.yExtents, i * self.yScale + self.yPos)))
 
         # Draw each line
         for l in xLines:
