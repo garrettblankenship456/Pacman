@@ -18,7 +18,7 @@ def main():
     # Create node and draw to screen
     node1 = Node(2, 3, 0, 0)
     node2 = Node(15, 7, 0, 0)
-    node3 = Node(1, 1, 0, 0)
+    node3 = Node(7, 6, 0, 0, True)
 
     # Add nodes to the grid and draw them
     grid.addNode(node1)

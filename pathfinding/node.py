@@ -6,13 +6,14 @@ from graphics import *
 # Class definition
 class Node:
     """Creates a node for finding paths"""
-    def __init__(self, gridX, gridY, realPosX, realPosY):
+    def __init__(self, gridX, gridY, realPosX, realPosY, wall = False):
         # Initialize variables
         self.gridX = gridX
         self.gridY = gridY
         self.realPosX = realPosX
         self.realPosY = realPosY
         self.parent = None # The last node used
+        self.wall = wall
 
         # Calculate F, H, and G variables
         self.g = 0
@@ -25,7 +26,7 @@ class Node:
     def calculateGH(self, startNode, targetNode, window = None):
         """Calculates G value and H value to the targetNode and back"""
         dist2Self = abs(self.gridX - startNode.gridX) + abs(self.gridY - startNode.gridY)
-        dist2Target = abs(self.gridX - targetNode.gridX) + abs(self.gridY - targetNode.gridY)
+        dist2Target = abs(self.gridX - targetNode.gridX) ** 2 + abs(self.gridY - targetNode.gridY) ** 2
         self.g = dist2Self
         self.h = dist2Target
         self.fValText.setText(str(round(self.getF())))
@@ -52,6 +53,13 @@ class Node:
 
         # Return list
         return nodeList
+
+    def isWall(self, nodeList):
+        """Sets the node to be a wall if it matches any walls in the list"""
+        for node in nodeList:
+            if node.gridX == self.gridX and node.gridY == self.gridY:
+                self.wall = True
+                break
 
     def __str__(self):
         data = "X: "

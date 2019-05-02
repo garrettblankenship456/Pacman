@@ -4,6 +4,7 @@
 from graphics import *
 from time import sleep
 from node import *
+import random
 
 # Class definition
 class Grid:
@@ -27,50 +28,57 @@ class Grid:
         closedNodes = []
         reached = False
 
+        # Get the start of the nodes
+        lowestNode = openNodes[0]
+        lowestIndex = 0
+        lowestF = lowestNode.getF(startNode, endNode)
+
         # Keep running until target is found
         while reached == False:
             # Get node with lowest F
-            lowestNode = openNodes[0]
-            lowestF = lowestNode.getF(startNode, endNode)
+            i = 0
             for node in openNodes:
                 currF = node.getF(startNode, endNode)
                 if currF < lowestF:
                     lowestF = currF
+                    lowestIndex = i
                     lowestNode = node
 
+                i += 1
+
+            # Debug statements
             r = Rectangle(Point(lowestNode.gridX * self.xScale, lowestNode.gridY * self.yScale), Point(lowestNode.gridX * self.xScale + self.xScale, lowestNode.gridY * self.yScale + self.yScale))
-            r.setOutline("blue")
+            r.setFill("blue")
             r.draw(window)
 
+            # Switch the node from open to closed
+            openNodes.pop(lowestIndex)
+            closedNodes.append(lowestNode)
+
             # Check if destination reached
-            if lowestNode == endNode:
+            if lowestNode.gridX == endNode.gridX and lowestNode.gridY == endNode.gridY:
                 print("Destination reached")
+                reached = True
                 break
             else:
-                closedNodes.append(lowestNode)
-
                 # Go through all its neighbors
                 neighbors = lowestNode.generateNodeMatrix()
-                lowestG = lowestNode.g
                 for neighbor in neighbors:
-                    neighbor.calculateGH(startNode, endNode)
-
-                    r = Rectangle(Point(neighbor.gridX * self.xScale, neighbor.gridY * self.yScale),
-                                  Point(neighbor.gridX * self.xScale + self.xScale,
-                                        neighbor.gridY * self.yScale + self.yScale))
-                    r.setOutline("green")
-                    r.draw(window)
-                    neighbor.getF(startNode, endNode, window)
-
-                    if neighbor.g < lowestG and neighbor in closedNodes:
-                        lowestG = neighbor.g
-                        neighbor.parent = lowestNode
+                    # Ignore if closed
+                    if neighbor in closedNodes or neighbor.wall == True:
                         continue
-                    elif lowestG < neighbor.g and neighbor in openNodes:
-                        neighbor.parent = lowestNode
-                        continue
-                    elif not neighbor in openNodes and not neighbor in closedNodes:
+
+                    # Add and compute score if its not calculated yet
+                    if neighbor in closedNodes and neighbor in openNodes:
+                        print("this shouldnt happen")
+                    else:
                         openNodes.append(neighbor)
+                        openNodes[len(openNodes) - 1].calculateGH(startNode, endNode, window)
+
+                    # Update it if its a quicker path (later only if needed)
+
+            sleep(0.1)
+
 
     def drawNodes(self, window):
         """Debug function to draw all the nodes to the window"""
