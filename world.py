@@ -9,7 +9,7 @@ from pathfinding.node import *
 
 class World:
     """World data and collision detection"""
-    def __init__(self):
+    def __init__(self, window = None):
         # Initialize data array
         self.worldData = []
         self.worldPolys = []
@@ -22,11 +22,11 @@ class World:
         # Decorator
         self.background = Image(Point(config.WINDOW_WIDTH / 2, config.WINDOW_HEIGHT / 2 - 18), "images/background.png")
 
-        # Generate grid
-        self.nodeGrid = Grid(0, -5, 20, 20, 35, 35)
-
         # generate world data
         self.__genWorldData("levels/pacman.txt")
+
+        # Generate grid
+        self.nodeGrid = Grid(0, -5, 20, 20, 36, 36, self.hitboxes, window)
 
     def __genPointMap(self, pointPath):
         """Reads the positions of all the points"""
@@ -82,9 +82,6 @@ class World:
                 # Create hitbox
                 self.hitboxes.append(BoundingBox(Point(xPos, yPos), Point(xSize, ySize)))
 
-                # Set the wall on the nav grid
-                #self.nodeGrid.setWall(int(xPos // 20), int((yPos - 5) // 20), True)
-
                 # Put array in world data
                 self.worldData.append(positions)
 
@@ -113,15 +110,16 @@ class World:
     def render(self, window):
         """Draws world to the GraphWin given"""
         # Draw background image
-        self.background.draw(window)
+        #self.background.draw(window)
 
         # Draw nav nodes
         self.nodeGrid.drawGrid(window)
+        self.nodeGrid.drawNodes(window)
 
         #for poly in self.worldPolys:
         #    poly.draw(window)
-        for b in self.hitboxes:
-            b.debugDraw(window)
+        #for b in self.hitboxes:
+            #b.debugDraw(window)
         #for s in self.squares:
             #s.draw(window)
 

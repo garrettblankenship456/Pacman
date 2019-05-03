@@ -5,11 +5,12 @@ from graphics import *
 from time import sleep
 from pathfinding.node import *
 import random
+from boundingbox import *
 
 # Class definition
 class Grid:
     """Holds all the nodes of the map"""
-    def __init__(self, xPos, yPos, xScale, yScale, xExtents, yExtents):
+    def __init__(self, xPos, yPos, xScale, yScale, xExtents, yExtents, walls = None, window = None):
         # Initialize variables
         self.xPos = xPos
         self.yPos = yPos
@@ -26,7 +27,15 @@ class Grid:
 
             # For every y in the x array
             for k in range(yExtents):
-                self.nodeList[i].append(Node(i, k, i * self.xScale, k * self.yScale))
+                self.nodeList[i].append(Node(i, k, i * self.xScale, k * self.yScale, window))
+
+        # If the walls arent none then set each node to a wall if its within the box
+        if walls != None:
+            for box in walls:
+                for xNode in self.nodeList:
+                    for node in xNode:
+                        if BoundingBox.positionCheck(box, Point(node.gridX * 20, node.gridY * 20)) == True:
+                            node.wall = True
 
     def addNode(self, node):
         """Adds node to the nodelist"""
@@ -60,7 +69,8 @@ class Grid:
             # Debug statements
             if window != None:
                 r = Rectangle(Point(lowestNode.gridX * self.xScale, lowestNode.gridY * self.yScale), Point(lowestNode.gridX * self.xScale + self.xScale, lowestNode.gridY * self.yScale + self.yScale))
-                r.setFill("blue")
+                r.setWidth(4)
+                r.setOutline("blue")
                 r.draw(window)
 
             # Switch the node from open to closed
@@ -71,6 +81,7 @@ class Grid:
             neighbors = endNode.getNeighbors(self.nodeList)
             if lowestNode in neighbors:
                 reached = True
+                print(reached)
                 closedNodes.reverse()
                 return closedNodes
                 break
@@ -87,20 +98,36 @@ class Grid:
                         print("this shouldnt happen")
                     else:
                         openNodes.append(neighbor)
-                        openNodes[len(openNodes) - 1].calculateGH(startNode, endNode)
+                        openNodes[-1].calculateGH(startNode, endNode)
 
                     # Update it if its a quicker path (later only if needed)
 
-    def setWall(self, x, y, isWall = True):
+            sleep(0.1)
+
+    def setWall(self, x, y, isWall = True, window = None):
         """Sets if the node is wall"""
         self.nodeList[x][y].wall = isWall
+
+        # Create wall at position if a window was provided
+        if window != None:
+            r = Rectangle(Point(x * 20, y * 20), Point(x * 20 + 20, y * 20 + 20))
+            r.setFill("red")
+            r.draw(window)
 
     def drawNodes(self, window):
         """Debug function to draw all the nodes to the window"""
         for nodeLine in self.nodeList:
             for node in nodeLine:
+                node.fValText.draw(window)
                 r = Rectangle(Point(node.gridX * self.xScale, node.gridY * self.yScale), Point(node.gridX * self.xScale + self.xScale, node.gridY * self.yScale + self.yScale))
-                r.setFill("red")
+                r.setWidth(4)
+
+                # Change color if its a wall or not
+                if node.wall == True:
+                    r.setOutline("yellow")
+                else:
+                    r.setOutline("green")
+
                 r.draw(window)
 
     def drawGrid(self, window):

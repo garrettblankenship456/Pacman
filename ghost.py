@@ -47,8 +47,8 @@ class Ghost(object):
             self.images[1].draw(window)
 
         # Paths
-        projected[0] = (targetPos.getX() - self.boundingBox.pos.getX()) * 0.01
-        projected[1] = (targetPos.getY() - self.boundingBox.pos.getY()) * 0.01
+        projected[0] = (targetPos.getX() - self.boundingBox.pos.getX())
+        projected[1] = (targetPos.getY() - self.boundingBox.pos.getY())
 
         # Normalization
         X = 0
@@ -64,7 +64,7 @@ class Ghost(object):
             Y = 0.1
 
         # Collision detection
-        #collided, box = world.isCollided(self.boundingBox)
+        collided, box = world.isCollided(self.boundingBox)
         #if collided:
             #projected[0] = X
             #projected[1] = Y

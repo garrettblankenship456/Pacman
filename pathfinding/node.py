@@ -6,7 +6,7 @@ from graphics import *
 # Class definition
 class Node:
     """Creates a node for finding paths"""
-    def __init__(self, gridX, gridY, realPosX, realPosY, wall = False):
+    def __init__(self, gridX, gridY, realPosX, realPosY, wall = False, window = None):
         # Initialize variables
         self.gridX = gridX
         self.gridY = gridY
@@ -21,7 +21,9 @@ class Node:
         self.f = 0
 
         # Stuff to hold values
-        self.fValText = Text(Point(self.gridX * 40 + 20, self.gridY * 40 + 20), "NULL")
+        self.fValText = Text(Point(self.gridX * 20 + 10, self.gridY * 20 + 10), "0")
+        if window != None:
+            self.fValText.draw(window)
 
     def calculateGH(self, startNode, targetNode, window = None):
         """Calculates G value and H value to the targetNode and back"""
@@ -29,11 +31,9 @@ class Node:
         dist2Target = abs(self.gridX - targetNode.gridX) ** 2 + abs(self.gridY - targetNode.gridY) ** 2
         self.g = dist2Self
         self.h = dist2Target
-        self.fValText.setText(str(round(self.getF())))
 
         # Draw if window was supplied
-        if window != None:
-            self.fValText.draw(window)
+        self.fValText.setText(str(round(self.getF())))
 
     def getF(self, startNode = None, endNode = None, window = None):
         """Returns F value"""
@@ -67,6 +67,12 @@ class Node:
         neighbors.append(nodeList[self.gridX - 1][self.gridY + 1])
         neighbors.append(nodeList[self.gridX][self.gridY + 1])
         neighbors.append(nodeList[self.gridX + 1][self.gridY + 1])
+
+        # Remove walls
+        for neighbor in neighbors:
+            if neighbor.wall == True:
+                neighbors.remove(neighbor)
+
         return neighbors
 
     def isWall(self, nodeList):
