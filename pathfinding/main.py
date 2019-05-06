@@ -16,7 +16,7 @@ def main():
     #grid.drawGrid(window)
 
     # Add nodes to the grid and draw them
-    for i in range(0, 16):
+    for i in range(0, 18):
         grid.setWall(6, i, True)
     #grid.setWall(7, 15, True)
     grid.drawNodes(window)

@@ -63,13 +63,15 @@ class Ghost(object):
         elif projected[1] < 0:
             Y = 0.1
 
+        print(X, Y)
+
         # Collision detection
         collided, box = world.isCollided(self.boundingBox)
         #if collided:
-            #projected[0] = X
-            #projected[1] = Y
+        #    projected[0] = X
+        #    projected[1] = Y
 
         for i in self.images:
-            i.move(projected[0], projected[1])
+            i.move(X, Y)
 
-        self.boundingBox.move(projected[0], projected[1])
+        self.boundingBox.move(X, Y)

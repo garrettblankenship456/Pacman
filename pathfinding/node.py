@@ -28,7 +28,7 @@ class Node:
     def calculateGH(self, startNode, targetNode, window = None):
         """Calculates G value and H value to the targetNode and back"""
         dist2Self = abs(self.gridX - startNode.gridX) + abs(self.gridY - startNode.gridY)
-        dist2Target = abs(self.gridX - targetNode.gridX) ** 2 + abs(self.gridY - targetNode.gridY) ** 2
+        dist2Target = abs(targetNode.gridX - self.gridX) ** 2 + abs(targetNode.gridY - self.gridY) ** 2
         self.g = dist2Self
         self.h = dist2Target
 

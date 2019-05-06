@@ -34,7 +34,7 @@ class Grid:
             for box in walls:
                 for xNode in self.nodeList:
                     for node in xNode:
-                        if BoundingBox.positionCheck(box, Point(node.gridX * 20, node.gridY * 20)) == True:
+                        if BoundingBox.pointWithin(box, BoundingBox(Point(node.gridX * self.xScale, node.gridY * self.yScale), Point(self.xScale, self.yScale))) == True:
                             node.wall = True
 
     def addNode(self, node):
@@ -46,20 +46,21 @@ class Grid:
         # Create nodes around the startNode and select the one with the lowest value
         openNodes = [startNode]
         closedNodes = []
+        path = []
         reached = False
 
         # Get the start of the nodes
         lowestNode = openNodes[0]
         lowestIndex = 0
-        lowestF = lowestNode.getF(startNode, endNode)
 
         # Keep running until target is found
         while reached == False:
             # Get node with lowest F
             i = 0
+            lowestF = 99999999999
             for node in openNodes:
                 currF = node.getF(startNode, endNode)
-                if currF < lowestF:
+                if currF <= lowestF and not node in closedNodes:
                     lowestF = currF
                     lowestIndex = i
                     lowestNode = node
@@ -76,14 +77,19 @@ class Grid:
             # Switch the node from open to closed
             openNodes.pop(lowestIndex)
             closedNodes.append(lowestNode)
+            path.append(lowestNode)
 
             # Check if destination reached
             neighbors = endNode.getNeighbors(self.nodeList)
             if lowestNode in neighbors:
                 reached = True
                 print(reached)
-                closedNodes.reverse()
-                return closedNodes
+                path.reverse()
+                return path
+                break
+            elif len(openNodes) <= 0:
+                # No path
+                return [startNode]
                 break
             else:
                 # Go through all its neighbors
@@ -102,7 +108,7 @@ class Grid:
 
                     # Update it if its a quicker path (later only if needed)
 
-            sleep(0.1)
+            #sleep(0.5)
 
     def setWall(self, x, y, isWall = True, window = None):
         """Sets if the node is wall"""

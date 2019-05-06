@@ -113,13 +113,13 @@ class World:
         #self.background.draw(window)
 
         # Draw nav nodes
-        self.nodeGrid.drawGrid(window)
-        self.nodeGrid.drawNodes(window)
+        #self.nodeGrid.drawGrid(window)
+        #self.nodeGrid.drawNodes(window)
 
         #for poly in self.worldPolys:
         #    poly.draw(window)
-        #for b in self.hitboxes:
-            #b.debugDraw(window)
+        for b in self.hitboxes:
+            b.debugDraw(window)
         #for s in self.squares:
             #s.draw(window)
 
