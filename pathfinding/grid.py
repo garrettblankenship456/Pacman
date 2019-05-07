@@ -84,12 +84,8 @@ class Grid:
             if lowestNode in neighbors:
                 reached = True
                 print(reached)
-                path.reverse()
+                #path.reverse()
                 return path
-                break
-            elif len(openNodes) <= 0:
-                # No path
-                return [startNode]
                 break
             else:
                 # Go through all its neighbors
@@ -107,6 +103,12 @@ class Grid:
                         openNodes[-1].calculateGH(startNode, endNode)
 
                     # Update it if its a quicker path (later only if needed)
+
+            # Check if no path is available
+            if len(openNodes) < 1:
+                # No path
+                return [startNode]
+                break
 
             #sleep(0.5)
 

@@ -19,7 +19,7 @@ class Ghost(object):
         time.sleep(0.1)
         self.image1.undraw()
 
-    def moveGhost(self, direction, window, world, targetPos):
+    def moveGhost(self, direction, window, world, targetPos, multiplier = 1):
         for i in self.images:
             i.undraw()
 
@@ -47,8 +47,8 @@ class Ghost(object):
             self.images[1].draw(window)
 
         # Paths
-        projected[0] = (targetPos.getX() - self.boundingBox.pos.getX())
-        projected[1] = (targetPos.getY() - self.boundingBox.pos.getY())
+        projected[0] = (targetPos.getX() - self.boundingBox.pos.getX()) * multiplier
+        projected[1] = (targetPos.getY() - self.boundingBox.pos.getY()) * multiplier
 
         # Normalization
         X = 0
@@ -63,15 +63,13 @@ class Ghost(object):
         elif projected[1] < 0:
             Y = 0.1
 
-        print(X, Y)
-
         # Collision detection
         collided, box = world.isCollided(self.boundingBox)
-        #if collided:
-        #    projected[0] = X
-        #    projected[1] = Y
+        if collided:
+            projected[0] = -projected[0]
+            projected[1] = -projected[1]
 
         for i in self.images:
-            i.move(X, Y)
+            i.move(projected[0], projected[1])
 
-        self.boundingBox.move(X, Y)
+        self.boundingBox.move(projected[0], projected[1])

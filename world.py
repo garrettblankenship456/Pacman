@@ -23,7 +23,7 @@ class World:
         self.background = Image(Point(config.WINDOW_WIDTH / 2, config.WINDOW_HEIGHT / 2 - 18), "images/background.png")
 
         # generate world data
-        self.__genWorldData("levels/pacman.txt")
+        self.__genWorldData("levels/newworld.txt")
 
         # Generate grid
         self.nodeGrid = Grid(0, -5, 20, 20, 36, 36, self.hitboxes, window)
