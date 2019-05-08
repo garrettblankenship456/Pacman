@@ -6,7 +6,7 @@ from graphics import *
 # Class definition
 class Node:
     """Creates a node for finding paths"""
-    def __init__(self, gridX, gridY, realPosX, realPosY, wall = False, window = None):
+    def __init__(self, gridX, gridY, realPosX, realPosY, grid, wall = False, window = None):
         # Initialize variables
         self.gridX = gridX
         self.gridY = gridY
@@ -21,7 +21,7 @@ class Node:
         self.f = 0
 
         # Stuff to hold values
-        self.fValText = Text(Point(self.gridX * 20 + 10, self.gridY * 20 + 10), "0")
+        self.fValText = Text(Point(self.gridX * grid.xScale + grid.xScale / 2, self.gridY * grid.yScale + grid.yScale / 2), "0")
         if window != None:
             self.fValText.draw(window)
 

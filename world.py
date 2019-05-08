@@ -26,7 +26,7 @@ class World:
         self.__genWorldData("levels/newworld.txt")
 
         # Generate grid
-        self.nodeGrid = Grid(0, -5, 20, 20, 36, 36, self.hitboxes, window)
+        self.nodeGrid = Grid(10, -10, 20, 20, 36, 36, self.hitboxes, window)
 
     def __genPointMap(self, pointPath):
         """Reads the positions of all the points"""
@@ -113,7 +113,7 @@ class World:
         #self.background.draw(window)
 
         # Draw nav nodes
-        #self.nodeGrid.drawGrid(window)
+        self.nodeGrid.drawGrid(window)
         #self.nodeGrid.drawNodes(window)
 
         #for poly in self.worldPolys:

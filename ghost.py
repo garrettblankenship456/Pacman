@@ -47,29 +47,38 @@ class Ghost(object):
             self.images[1].draw(window)
 
         # Paths
-        projected[0] = (targetPos.getX() - self.boundingBox.pos.getX()) * multiplier
-        projected[1] = (targetPos.getY() - self.boundingBox.pos.getY()) * multiplier
+        projected[0] = ((targetPos.getX() + 10) - (self.boundingBox.pos.getX() + self.boundingBox.size.getX() / 2)) * multiplier
+        projected[1] = ((targetPos.getY() + 20) - (self.boundingBox.pos.getY() + self.boundingBox.size.getY() / 2)) * multiplier
+        print("X:", projected[0], " Y:", projected[1])
 
         # Normalization
         X = 0
         Y = 0
         if projected[0] > 0:
-            X = -0.1
-        elif projected[0] < 0:
             X = 0.1
+        elif projected[0] < 0:
+            X = -0.1
 
         if projected[1] > 0:
-            Y = -0.1
-        elif projected[1] < 0:
             Y = 0.1
+        elif projected[1] < 0:
+            Y = -0.1
 
-        # Collision detection
-        collided, box = world.isCollided(self.boundingBox)
-        if collided:
-            projected[0] = -projected[0]
-            projected[1] = -projected[1]
+        # Collision detection in north-south
+        xProjection = BoundingBox(Point(self.boundingBox.pos.getX() + X, self.boundingBox.pos.getY()),
+                                      self.boundingBox.size)
+        yProjection = BoundingBox(Point(self.boundingBox.pos.getX(), self.boundingBox.pos.getY() + Y),
+                                      self.boundingBox.size)
+
+        xCollision, box = world.isCollided(xProjection)
+        yCollision, box = world.isCollided(yProjection)
+        if xCollision:
+            X = 0
+
+        if yCollision:
+            Y = 0
 
         for i in self.images:
-            i.move(projected[0], projected[1])
+            i.move(X, Y)
 
-        self.boundingBox.move(projected[0], projected[1])
+        self.boundingBox.move(X, Y)

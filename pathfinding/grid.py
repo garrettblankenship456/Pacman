@@ -27,14 +27,14 @@ class Grid:
 
             # For every y in the x array
             for k in range(yExtents):
-                self.nodeList[i].append(Node(i, k, i * self.xScale, k * self.yScale, window))
+                self.nodeList[i].append(Node(i, k, i * self.xScale + xPos, k * self.yScale + yPos, self, window))
 
         # If the walls arent none then set each node to a wall if its within the box
         if walls != None:
             for box in walls:
                 for xNode in self.nodeList:
                     for node in xNode:
-                        if BoundingBox.pointWithin(box, BoundingBox(Point(node.gridX * self.xScale, node.gridY * self.yScale), Point(self.xScale, self.yScale))) == True:
+                        if BoundingBox.pointWithin(box, BoundingBox(Point(node.gridX * self.xScale + xPos, node.gridY * self.yScale + yPos), Point(self.xScale, self.yScale))) == True:
                             node.wall = True
 
     def addNode(self, node):
@@ -118,7 +118,7 @@ class Grid:
 
         # Create wall at position if a window was provided
         if window != None:
-            r = Rectangle(Point(x * 20, y * 20), Point(x * 20 + 20, y * 20 + 20))
+            r = Rectangle(Point(x * self.xScale, y * self.yScale), Point(x * self.xScale + self.xScale, y * self.yScale + self.yScale))
             r.setFill("red")
             r.draw(window)
 
@@ -127,7 +127,7 @@ class Grid:
         for nodeLine in self.nodeList:
             for node in nodeLine:
                 node.fValText.draw(window)
-                r = Rectangle(Point(node.gridX * self.xScale, node.gridY * self.yScale), Point(node.gridX * self.xScale + self.xScale, node.gridY * self.yScale + self.yScale))
+                r = Rectangle(Point(node.gridX * self.xScale + self.xPos, node.gridY * self.yScale + self.yPos), Point(node.gridX * self.xScale + self.xScale + self.xPos, node.gridY * self.yScale + self.yScale + self.yPos))
                 r.setWidth(4)
 
                 # Change color if its a wall or not

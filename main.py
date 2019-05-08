@@ -28,7 +28,7 @@ def main():
     deltaTime = 0
 
     # Create ghosts
-    g = Ghost("blinky", Point(config.WINDOW_WIDTH / 2, config.WINDOW_HEIGHT / 2 - 25))
+    g = Ghost("blinky", Point(config.WINDOW_WIDTH / 2, config.WINDOW_HEIGHT / 2 - 27))
     ghostPathIndex = 0
     lastMoved = time.time()
 
@@ -72,10 +72,18 @@ def main():
 
         # Enemy path finding
         if True:
-            g.moveGhost("e", window, world, Point(path[ghostPathIndex].realPosX, path[ghostPathIndex].realPosY), 0.005)
+            g.moveGhost("e", window, world, Point(path[ghostPathIndex].realPosX, path[ghostPathIndex].realPosY), 1)
 
-            if BoundingBox.pointWithin(g.boundingBox, BoundingBox(Point(path[ghostPathIndex].realPosX + 10, path[ghostPathIndex].realPosY + 10), Point(20, 20))):
+            if BoundingBox.pointWithin(g.boundingBox, BoundingBox(Point(path[ghostPathIndex].realPosX, path[ghostPathIndex].realPosY), Point(20, 20))):
+                r = Rectangle(Point(path[ghostPathIndex].realPosX, path[ghostPathIndex].realPosY), Point(path[ghostPathIndex].realPosX + 20, path[ghostPathIndex].realPosY + 20))
+                r.setFill("blue")
+                r.draw(window)
                 ghostPathIndex += 1
+                r = Rectangle(Point(path[ghostPathIndex].realPosX, path[ghostPathIndex].realPosY),
+                              Point(path[ghostPathIndex].realPosX + 20, path[ghostPathIndex].realPosY + 20))
+                r.setFill("green")
+                r.draw(window)
+
             lastMoved = time.time()
 
         if ghostPathIndex > len(path) - 1:
@@ -86,7 +94,6 @@ def main():
             ghostGridX = int((g.boundingBox.pos.getX()) // 20)
             ghostGridY = int((g.boundingBox.pos.getY()) // 20)
             path = world.nodeGrid.pathFind(world.nodeGrid.nodeList[ghostGridX][ghostGridY], world.nodeGrid.nodeList[plyGridX][plyGridY])
-
 
         # Update window and player
         player.update(window, world, 1)
