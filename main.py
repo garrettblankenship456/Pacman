@@ -12,7 +12,7 @@ import time
 # Main function
 def main():
     # Initialize window
-    window = GraphWin("Pacman", config.WINDOW_WIDTH, config.WINDOW_HEIGHT, autoflush=False)
+    window = GraphWin("Pacman", config.WINDOW_WIDTH, config.WINDOW_HEIGHT)#, autoflush=False)
     window.setBackground("white")
 
     # Initialize world
@@ -75,14 +75,14 @@ def main():
             g.moveGhost("e", window, world, Point(path[ghostPathIndex].realPosX, path[ghostPathIndex].realPosY), 1)
 
             if BoundingBox.pointWithin(g.boundingBox, BoundingBox(Point(path[ghostPathIndex].realPosX, path[ghostPathIndex].realPosY), Point(20, 20))):
-                r = Rectangle(Point(path[ghostPathIndex].realPosX, path[ghostPathIndex].realPosY), Point(path[ghostPathIndex].realPosX + 20, path[ghostPathIndex].realPosY + 20))
+                """r = Rectangle(Point(path[ghostPathIndex].realPosX, path[ghostPathIndex].realPosY), Point(path[ghostPathIndex].realPosX + 20, path[ghostPathIndex].realPosY + 20))
                 r.setFill("blue")
                 r.draw(window)
                 ghostPathIndex += 1
                 r = Rectangle(Point(path[ghostPathIndex].realPosX, path[ghostPathIndex].realPosY),
                               Point(path[ghostPathIndex].realPosX + 20, path[ghostPathIndex].realPosY + 20))
                 r.setFill("green")
-                r.draw(window)
+                r.draw(window)"""
 
             lastMoved = time.time()
 

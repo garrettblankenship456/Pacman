@@ -110,7 +110,7 @@ class Grid:
                 return [startNode]
                 break
 
-            #sleep(0.5)
+            sleep(0.5)
 
     def setWall(self, x, y, isWall = True, window = None):
         """Sets if the node is wall"""

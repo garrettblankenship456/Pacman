@@ -14,6 +14,7 @@ class World:
         self.worldData = []
         self.worldPolys = []
         self.hitboxes = []
+        self.navWalls = []
         self.teleporters = [[BoundingBox(Point(-30, 340), Point(40, 40)), Point(590, 325)], [BoundingBox(Point(630, 340), Point(40, 40)), Point(10, 325)]]
         self.squares = []
         self.mirrored = False
@@ -22,11 +23,13 @@ class World:
         # Decorator
         self.background = Image(Point(config.WINDOW_WIDTH / 2, config.WINDOW_HEIGHT / 2 - 18), "images/background.png")
 
-        # generate world data
+        # generate world data and nav mesh
         self.__genWorldData("levels/newworld.txt")
 
         # Generate grid
-        self.nodeGrid = Grid(10, -10, 20, 20, 36, 36, self.hitboxes, window)
+        self.nodeGrid = Grid(10, -10, 20, 20, 36, 36, None, window)
+        #self.nodeGrid = Grid(0, 0, 20, 20, 36, 36, None, window)
+        self.__genNavMesh("levels/navmesh.txt")
 
     def __genPointMap(self, pointPath):
         """Reads the positions of all the points"""
@@ -107,14 +110,29 @@ class World:
                 # Create points
                 self.__genPointMap("levels/points.txt")
 
+    def __genNavMesh(self, levelPath):
+        # Creates all the world data from file
+        file = open(levelPath)
+        for line in file:
+            # Get XY from points
+            pointData = line.split(",")
+            xPos = int(pointData[0])
+            yPos = int(pointData[1])
+
+            # Set walls
+            for xNode in self.nodeGrid.nodeList:
+                for node in xNode:
+                    if node.gridX == xPos and node.gridY == yPos:
+                        node.wall = False
+
     def render(self, window):
         """Draws world to the GraphWin given"""
         # Draw background image
         #self.background.draw(window)
 
         # Draw nav nodes
-        self.nodeGrid.drawGrid(window)
-        #self.nodeGrid.drawNodes(window)
+        #self.nodeGrid.drawGrid(window)
+        self.nodeGrid.drawNodes(window)
 
         #for poly in self.worldPolys:
         #    poly.draw(window)
