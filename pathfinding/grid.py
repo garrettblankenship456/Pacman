@@ -28,6 +28,7 @@ class Grid:
             # For every y in the x array
             for k in range(yExtents):
                 self.nodeList[i].append(Node(i, k, i * self.xScale + xPos, k * self.yScale + yPos, self, window))
+                self.nodeList[i][k].wall = True
 
         # If the walls arent none then set each node to a wall if its within the box
         if walls != None:
@@ -110,7 +111,7 @@ class Grid:
                 return [startNode]
                 break
 
-            sleep(0.5)
+            sleep(0.05)
 
     def setWall(self, x, y, isWall = True, window = None):
         """Sets if the node is wall"""

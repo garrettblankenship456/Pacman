@@ -33,10 +33,10 @@ def main():
     lastMoved = time.time()
 
     #  Get grid pos of the player
-    plyGridX = int((player.boundingBox.pos.getX()) // 20)
-    plyGridY = int((player.boundingBox.pos.getY()) // 20)
-    ghostGridX = int((g.boundingBox.pos.getX()) // 20)
-    ghostGridY = int((g.boundingBox.pos.getY()) // 20)
+    plyGridX = int((player.boundingBox.pos.getX()) // world.nodeGrid.xScale)
+    plyGridY = int((player.boundingBox.pos.getY()) // world.nodeGrid.yScale)
+    ghostGridX = int((g.boundingBox.pos.getX()) // world.nodeGrid.xScale)
+    ghostGridY = int((g.boundingBox.pos.getY()) // world.nodeGrid.yScale)
     path = world.nodeGrid.pathFind(world.nodeGrid.nodeList[ghostGridX][ghostGridY],
                                    world.nodeGrid.nodeList[plyGridX][plyGridY])
 
@@ -74,25 +74,25 @@ def main():
         if True:
             g.moveGhost("e", window, world, Point(path[ghostPathIndex].realPosX, path[ghostPathIndex].realPosY), 1)
 
-            if BoundingBox.pointWithin(g.boundingBox, BoundingBox(Point(path[ghostPathIndex].realPosX, path[ghostPathIndex].realPosY), Point(20, 20))):
-                """r = Rectangle(Point(path[ghostPathIndex].realPosX, path[ghostPathIndex].realPosY), Point(path[ghostPathIndex].realPosX + 20, path[ghostPathIndex].realPosY + 20))
+            if BoundingBox.pointWithin(g.boundingBox, BoundingBox(Point(path[ghostPathIndex].realPosX, path[ghostPathIndex].realPosY), Point(world.nodeGrid.xScale, world.nodeGrid.yScale))):
+                r = Rectangle(Point(path[ghostPathIndex].realPosX, path[ghostPathIndex].realPosY), Point(path[ghostPathIndex].realPosX + world.nodeGrid.xScale, path[ghostPathIndex].realPosY + world.nodeGrid.yScale))
                 r.setFill("blue")
                 r.draw(window)
                 ghostPathIndex += 1
                 r = Rectangle(Point(path[ghostPathIndex].realPosX, path[ghostPathIndex].realPosY),
-                              Point(path[ghostPathIndex].realPosX + 20, path[ghostPathIndex].realPosY + 20))
+                              Point(path[ghostPathIndex].realPosX + world.nodeGrid.xScale, path[ghostPathIndex].realPosY + world.nodeGrid.yScale))
                 r.setFill("green")
-                r.draw(window)"""
+                r.draw(window)
 
             lastMoved = time.time()
 
         if ghostPathIndex > len(path) - 1:
             ghostPathIndex = 0
 
-            plyGridX = int((player.boundingBox.pos.getX()) // 20)
-            plyGridY = int((player.boundingBox.pos.getY()) // 20)
-            ghostGridX = int((g.boundingBox.pos.getX()) // 20)
-            ghostGridY = int((g.boundingBox.pos.getY()) // 20)
+            plyGridX = int((player.boundingBox.pos.getX()) // world.nodeGrid.xScale)
+            plyGridY = int((player.boundingBox.pos.getY()) // world.nodeGrid.yScale)
+            ghostGridX = int((g.boundingBox.pos.getX()) // world.nodeGrid.xScale)
+            ghostGridY = int((g.boundingBox.pos.getY()) // world.nodeGrid.yScale)
             path = world.nodeGrid.pathFind(world.nodeGrid.nodeList[ghostGridX][ghostGridY], world.nodeGrid.nodeList[plyGridX][plyGridY])
 
         # Update window and player

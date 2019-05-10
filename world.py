@@ -27,7 +27,8 @@ class World:
         self.__genWorldData("levels/newworld.txt")
 
         # Generate grid
-        self.nodeGrid = Grid(10, -10, 20, 20, 36, 36, None, window)
+        self.nodeGrid = Grid(10, -5, 10, 10, 72, 72, None, window)
+        #self.nodeGrid = Grid(10, 10, 20, 20, 36, 36, None, window)
         #self.nodeGrid = Grid(0, 0, 20, 20, 36, 36, None, window)
         self.__genNavMesh("levels/navmesh.txt")
 
@@ -120,10 +121,7 @@ class World:
             yPos = int(pointData[1])
 
             # Set walls
-            for xNode in self.nodeGrid.nodeList:
-                for node in xNode:
-                    if node.gridX == xPos and node.gridY == yPos:
-                        node.wall = False
+            self.nodeGrid.nodeList[xPos][yPos].wall = False
 
     def render(self, window):
         """Draws world to the GraphWin given"""

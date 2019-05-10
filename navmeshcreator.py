@@ -26,6 +26,9 @@ def main():
     w = World()
     w.render(window)
 
+    config.MAP_OFFSET_Y = config.MAP_OFFSET_Y + w.nodeGrid.yPos
+    config.MAP_OFFSET_X = config.MAP_OFFSET_X + w.nodeGrid.xPos
+
     # Main loop
     while True:
         keys = window.checkKeys()
@@ -41,13 +44,13 @@ def main():
         # Get click postitons
         pos = window.checkMouse()
         clickPoint.undraw()
-        clickPoint = Rectangle(Point(window.getCurrentMouseLocation().getX() // 20 * 20, window.getCurrentMouseLocation().getY() // 20 * 20), Point(((window.getCurrentMouseLocation().getX() + 20) // 20 * 20), ((window.getCurrentMouseLocation().getY() + 20) // 20) * 20))
+        clickPoint = Rectangle(Point(window.getCurrentMouseLocation().getX() // w.nodeGrid.xScale * w.nodeGrid.xScale + config.MAP_OFFSET_X, window.getCurrentMouseLocation().getY() // w.nodeGrid.xScale * w.nodeGrid.xScale + config.MAP_OFFSET_Y), Point(((window.getCurrentMouseLocation().getX() + w.nodeGrid.xScale) // w.nodeGrid.xScale * w.nodeGrid.xScale + config.MAP_OFFSET_X), ((window.getCurrentMouseLocation().getY() + w.nodeGrid.xScale) // w.nodeGrid.xScale) * w.nodeGrid.xScale + config.MAP_OFFSET_Y))
         clickPoint.setFill("white")
         clickPoint.draw(window)
         if pos != None:
             positions.append(pos)
 
-            r = Rectangle(Point(pos.getX() // 20 * 20, pos.getY() // 20 * 20), Point(pos.getX() // 20 * 20 + 20, pos.getY() // 20 * 20 + 20))
+            r = Rectangle(Point(pos.getX() // w.nodeGrid.xScale * w.nodeGrid.xScale + config.MAP_OFFSET_X, pos.getY() // w.nodeGrid.xScale * w.nodeGrid.xScale + config.MAP_OFFSET_Y), Point(pos.getX() // w.nodeGrid.xScale * w.nodeGrid.xScale + w.nodeGrid.xScale + config.MAP_OFFSET_X, pos.getY() // w.nodeGrid.xScale * w.nodeGrid.xScale + w.nodeGrid.xScale + config.MAP_OFFSET_Y))
             r.setFill("orange")
             r.draw(window)
             boxes.append(r)
@@ -62,9 +65,9 @@ def main():
     file = open(path, "w")
     for p in positions:
         data = ""
-        data += str(int(p.getX() // 20))
+        data += str(int(p.getX() // w.nodeGrid.xScale))
         data += ","
-        data += str(int(p.getY() // 20))
+        data += str(int(p.getY() // w.nodeGrid.xScale))
         data += "\n"
         file.write(data)
 

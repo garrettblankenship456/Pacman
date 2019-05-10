@@ -47,9 +47,9 @@ class Ghost(object):
             self.images[1].draw(window)
 
         # Paths
-        projected[0] = ((targetPos.getX() + 10) - (self.boundingBox.pos.getX() + self.boundingBox.size.getX() / 2)) * multiplier
+        projected[0] = ((targetPos.getX() + 20) - (self.boundingBox.pos.getX() + self.boundingBox.size.getX() / 2)) * multiplier
         projected[1] = ((targetPos.getY() + 20) - (self.boundingBox.pos.getY() + self.boundingBox.size.getY() / 2)) * multiplier
-        print("X:", projected[0], " Y:", projected[1])
+        #print("X:", projected[0], " Y:", projected[1])
 
         # Normalization
         X = 0
