@@ -75,16 +75,7 @@ def main():
             g.moveGhost("e", window, world, Point(path[ghostPathIndex].realPosX, path[ghostPathIndex].realPosY), 1)
 
             if BoundingBox.pointWithin(g.boundingBox, BoundingBox(Point(path[ghostPathIndex].realPosX, path[ghostPathIndex].realPosY), Point(world.nodeGrid.xScale, world.nodeGrid.yScale))):
-                r = Rectangle(Point(path[ghostPathIndex].realPosX, path[ghostPathIndex].realPosY), Point(path[ghostPathIndex].realPosX + world.nodeGrid.xScale, path[ghostPathIndex].realPosY + world.nodeGrid.yScale))
-                r.setFill("blue")
-                r.draw(window)
                 ghostPathIndex += 1
-                r = Rectangle(Point(path[ghostPathIndex].realPosX, path[ghostPathIndex].realPosY),
-                              Point(path[ghostPathIndex].realPosX + world.nodeGrid.xScale, path[ghostPathIndex].realPosY + world.nodeGrid.yScale))
-                r.setFill("green")
-                r.draw(window)
-
-            lastMoved = time.time()
 
         if ghostPathIndex > len(path) - 1:
             ghostPathIndex = 0

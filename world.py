@@ -130,7 +130,7 @@ class World:
 
         # Draw nav nodes
         #self.nodeGrid.drawGrid(window)
-        self.nodeGrid.drawNodes(window)
+        #self.nodeGrid.drawNodes(window)
 
         #for poly in self.worldPolys:
         #    poly.draw(window)
