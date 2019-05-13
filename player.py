@@ -16,7 +16,7 @@ class Player:
         self.projectedBox = BoundingBox(Point(config.WINDOW_WIDTH / 2 - 15, 655), Point(size, size))
         self.direction = "e"
         self.nextDirection = "e"
-        self.movmentSpeed = 0.1
+        self.movmentSpeed = 0.15
         self.score = 0
 
         # Animation variables

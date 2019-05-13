@@ -28,8 +28,6 @@ class World:
 
         # Generate grid
         self.nodeGrid = Grid(10, -5, 10, 10, 72, 72, None, window)
-        #self.nodeGrid = Grid(10, 10, 20, 20, 36, 36, None, window)
-        #self.nodeGrid = Grid(0, 0, 20, 20, 36, 36, None, window)
         self.__genNavMesh("levels/navmesh.txt")
 
     def __genPointMap(self, pointPath):

@@ -82,6 +82,11 @@ class Node:
                 self.wall = True
                 break
 
+    def debugDraw(self, window):
+        r = Rectangle(Point(self.gridX * 10 + 10, self.gridY * 10 - 5), Point(self.gridX * 10 + 10 + 10, self.gridY * 10 + 10 - 5))
+        r.setFill("orange")
+        r.draw(window)
+
     def __str__(self):
         data = "X: "
         data += str(self.gridX)

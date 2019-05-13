@@ -61,7 +61,7 @@ class Grid:
             lowestF = 99999999999
             for node in openNodes:
                 currF = node.getF(startNode, endNode)
-                if currF <= lowestF and not node in closedNodes:
+                if currF <= lowestF and not node in closedNodes and node.wall == False:
                     lowestF = currF
                     lowestIndex = i
                     lowestNode = node
@@ -70,15 +70,16 @@ class Grid:
 
             # Debug statements
             if window != None:
-                r = Rectangle(Point(lowestNode.gridX * self.xScale, lowestNode.gridY * self.yScale), Point(lowestNode.gridX * self.xScale + self.xScale, lowestNode.gridY * self.yScale + self.yScale))
+                r = Rectangle(Point(lowestNode.gridX * self.xScale + self.xPos, lowestNode.gridY * self.yScale + self.yPos), Point(lowestNode.gridX * self.xScale + self.xScale + self.xPos, lowestNode.gridY * self.yScale + self.yScale + self.yPos))
                 r.setWidth(4)
                 r.setOutline("blue")
                 r.draw(window)
 
             # Switch the node from open to closed
-            openNodes.pop(lowestIndex)
-            closedNodes.append(lowestNode)
-            path.append(lowestNode)
+            if lowestIndex < len(openNodes):
+                openNodes.pop(lowestIndex)
+                closedNodes.append(lowestNode)
+                path.append(lowestNode)
 
             # Check if destination reached
             neighbors = endNode.getNeighbors(self.nodeList)
@@ -96,14 +97,19 @@ class Grid:
                     if neighbor in closedNodes or neighbor.wall == True:
                         continue
 
+                    # Update it if its a quicker path (later only if needed)
+                    if neighbor in openNodes and lowestNode.f < neighbor.g:
+                        openNodes.remove(neighbor)
+                        closedNodes.append(neighbor)
+                        closedNodes[-1].parent = lowestNode
+
                     # Add and compute score if its not calculated yet
                     if neighbor in closedNodes and neighbor in openNodes:
                         print("this shouldnt happen")
                     else:
                         openNodes.append(neighbor)
                         openNodes[-1].calculateGH(startNode, endNode)
-
-                    # Update it if its a quicker path (later only if needed)
+                        openNodes[-1].parent = lowestNode
 
             # Check if no path is available
             if len(openNodes) < 1:
@@ -127,6 +133,8 @@ class Grid:
         """Debug function to draw all the nodes to the window"""
         for nodeLine in self.nodeList:
             for node in nodeLine:
+                #if node.wall == True: continue
+
                 node.fValText.draw(window)
                 r = Rectangle(Point(node.gridX * self.xScale + self.xPos, node.gridY * self.yScale + self.yPos), Point(node.gridX * self.xScale + self.xScale + self.xPos, node.gridY * self.yScale + self.yScale + self.yPos))
                 r.setWidth(4)

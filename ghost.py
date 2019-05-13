@@ -55,14 +55,14 @@ class Ghost(object):
         X = 0
         Y = 0
         if projected[0] > 0:
-            X = 0.1
+            X = 0.1 * multiplier
         elif projected[0] < 0:
-            X = -0.1
+            X = -0.1 * multiplier
 
         if projected[1] > 0:
-            Y = 0.1
+            Y = 0.1 * multiplier
         elif projected[1] < 0:
-            Y = -0.1
+            Y = -0.1 * multiplier
 
         # Collision detection in north-south
         xProjection = BoundingBox(Point(self.boundingBox.pos.getX() + X, self.boundingBox.pos.getY()),
