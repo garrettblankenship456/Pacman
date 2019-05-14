@@ -1,6 +1,7 @@
 from graphics import *
 from world import *
 from boundingbox import *
+import time
 
 class Ghost(object):
     """Ghosts"""
@@ -14,32 +15,21 @@ class Ghost(object):
 
         self.boundingBox = BoundingBox(Point(pos.getX() - (39.5 / 2), pos.getY() - (39.5 / 2)), Point(39.5, 39.5))
 
+        # Path finding variables
+        self.ghostPathIndex = 0
+        self.path = []
+        self.lastTracked = 0
+
     def drawGhost(self, win):
         self.image1.draw(win)
         time.sleep(0.1)
         self.image1.undraw()
 
-    def moveGhost(self, direction, window, world, targetPos, multiplier = 1):
+    def moveGhost(self, window, world, targetPos, multiplier = 1):
         for i in self.images:
             i.undraw()
 
         projected = [0, 0]
-        if direction.lower() == "n":
-            projected[0] = 0
-            projected[1] = -0.1
-        elif direction.lower() == "e":
-            projected[0] = 0.1
-            projected[1] = 0
-
-            self.a = False
-        elif direction.lower() == "s":
-            projected[0] = 0
-            projected[1] = 0.1
-        elif direction.lower() == "w":
-            projected[0] = -0.1
-            projected[1] = 0
-
-            self.a = True
 
         if self.a == True:
             self.images[0].draw(window)
@@ -49,15 +39,20 @@ class Ghost(object):
         # Paths
         projected[0] = ((targetPos.getX() + 20) - (self.boundingBox.pos.getX() + self.boundingBox.size.getX() / 2)) * multiplier
         projected[1] = ((targetPos.getY() + 20) - (self.boundingBox.pos.getY() + self.boundingBox.size.getY() / 2)) * multiplier
-        #print("X:", projected[0], " Y:", projected[1])
 
         # Normalization
         X = 0
         Y = 0
         if projected[0] > 0:
             X = 0.1 * multiplier
+
+            # Set direction based on projected
+            self.a = False
         elif projected[0] < 0:
             X = -0.1 * multiplier
+
+            # Set direction based on projected
+            self.a = True
 
         if projected[1] > 0:
             Y = 0.1 * multiplier
@@ -82,3 +77,26 @@ class Ghost(object):
             i.move(X, Y)
 
         self.boundingBox.move(X, Y)
+
+    def update(self, window, player, world):
+        """Updates the ghost entirely, moves it and path finds accordingly"""
+        if self.ghostPathIndex > len(self.path) - 1 or time.time() > self.lastTracked + 15:
+            self.ghostPathIndex = 0
+
+            plyGridX = int((player.boundingBox.pos.getX()) // world.nodeGrid.xScale) - 1
+            plyGridY = int((player.boundingBox.pos.getY()) // world.nodeGrid.yScale) + 1
+            ghostGridX = int((self.boundingBox.pos.getX()) // world.nodeGrid.xScale) - 1
+            ghostGridY = int((self.boundingBox.pos.getY()) // world.nodeGrid.yScale) + 1
+
+            try:
+                self.path = world.nodeGrid.pathFind(world.nodeGrid.nodeList[ghostGridX][ghostGridY], world.nodeGrid.nodeList[plyGridX][plyGridY])
+            except:
+                print("error")
+
+            self.lastTracked = time.time()
+
+        if self.ghostPathIndex < len(self.path) or self.lastTracked == 0:
+            self.moveGhost(window, world, Point(self.path[self.ghostPathIndex].realPosX, self.path[self.ghostPathIndex].realPosY), 1.2)
+
+        if BoundingBox.pointWithin(self.boundingBox, BoundingBox(Point(self.path[self.ghostPathIndex].realPosX, self.path[self.ghostPathIndex].realPosY), Point(world.nodeGrid.xScale, world.nodeGrid.yScale))):
+            self.ghostPathIndex += 1

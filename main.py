@@ -22,25 +22,19 @@ def main():
     # Initialize scene objects
     # Player
     player = Player()
+    dead = False
 
     # Deltatime
     lastTime = time.time()
     deltaTime = 0
 
     # Create ghosts
-    g = Ghost("blinky", Point(config.WINDOW_WIDTH / 2, config.WINDOW_HEIGHT / 2 - 27))
-    ghostPathIndex = 0
-    lastMoved = time.time()
-
-    #  Get grid pos of the player
-    plyGridX = int((player.boundingBox.pos.getX()) // world.nodeGrid.xScale)
-    plyGridY = int((player.boundingBox.pos.getY()) // world.nodeGrid.yScale)
-    ghostGridX = int((g.boundingBox.pos.getX()) // world.nodeGrid.xScale)
-    ghostGridY = int((g.boundingBox.pos.getY()) // world.nodeGrid.yScale)
-    path = world.nodeGrid.pathFind(world.nodeGrid.nodeList[ghostGridX][ghostGridY],
-                                   world.nodeGrid.nodeList[plyGridX][plyGridY])
-
-    lastTracked = time.time()
+    blinky = Ghost("blinky", Point(config.WINDOW_WIDTH / 2, config.WINDOW_HEIGHT / 2 - 27))
+    clyde = Ghost("clyde", Point(config.WINDOW_WIDTH / 2, config.WINDOW_HEIGHT / 2 - 27))
+    inky = Ghost("inky", Point(config.WINDOW_WIDTH / 2, config.WINDOW_HEIGHT / 2 - 27))
+    pinky = Ghost("pinky", Point(config.WINDOW_WIDTH / 2, config.WINDOW_HEIGHT / 2 - 27))
+    ghosts = (blinky, clyde, inky, pinky)
+    startTime = time.time() # Time the ghost started, slow release
 
     # Main loop
     while True:
@@ -52,52 +46,39 @@ def main():
             break
 
         # Player controls
-        if "w" in keys:
-            player.move('n')
-        if "s" in keys:
-            player.move('s')
-        if "a" in keys:
-            player.move('w')
-        if "d" in keys:
-            player.move('e')
+        if dead == False:
+            if "w" in keys:
+                player.move('n')
+            if "s" in keys:
+                player.move('s')
+            if "a" in keys:
+                player.move('w')
+            if "d" in keys:
+                player.move('e')
+        else:
+            sleep(1)
+            break
 
         # Update deltatime
         currTime = time.time()
         deltaTime = currTime - lastTime
         lastTime = currTime
 
-        # Game logic
-        if world.isCollided(player.boundingBox):
-            player.box.setFill("red")
-        else:
-            player.box.setFill("blue")
-
         # Enemy path finding
-        try:
-            g.moveGhost("e", window, world, Point(path[ghostPathIndex].realPosX, path[ghostPathIndex].realPosY), 2)
-        except:
-            print("Error")
+        if time.time() > startTime + 5:
+            blinky.update(window, player, world)
 
-        if ghostPathIndex > len(path) - 1 or time.time() > lastTracked + 15:
-            ghostPathIndex = 0
+        if time.time() > startTime + 10:
+            clyde.update(window, player, world)
 
-            plyGridX = int((player.boundingBox.pos.getX()) // world.nodeGrid.xScale)
-            plyGridY = int((player.boundingBox.pos.getY()) // world.nodeGrid.yScale)
-            ghostGridX = int((g.boundingBox.pos.getX()) // world.nodeGrid.xScale) - 1
-            ghostGridY = int((g.boundingBox.pos.getY()) // world.nodeGrid.yScale) + 1
+        if time.time() > startTime + 15:
+            inky.update(window, player, world)
 
-            try:
-                path = world.nodeGrid.pathFind(world.nodeGrid.nodeList[ghostGridX][ghostGridY], world.nodeGrid.nodeList[plyGridX][plyGridY])
-            except:
-                print("error")
-
-            lastTracked = time.time()
-
-        if BoundingBox.pointWithin(g.boundingBox, BoundingBox(Point(path[ghostPathIndex].realPosX, path[ghostPathIndex].realPosY), Point(world.nodeGrid.xScale, world.nodeGrid.yScale))):
-            ghostPathIndex += 1
+        if time.time() > startTime + 20:
+            pinky.update(window, player, world)
 
         # Update window and player
-        player.update(window, world, 1)
+        dead = player.update(window, world, 1, ghosts)
         window.update()
 
     # Graceful exit

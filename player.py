@@ -43,7 +43,7 @@ class Player:
         # Get projection position and see if it collides
         self.nextDirection = direction
 
-    def update(self, window, world, deltaTime):
+    def update(self, window, world, deltaTime, ghosts):
         """Updates the player"""
         # Undraw images
         for p in self.images:
@@ -121,8 +121,8 @@ class Player:
 
         if collision:
             # Zero out velocity
-            projected[0] = X
-            projected[1] = Y
+            projected[0] = X * (self.movmentSpeed * 5)
+            projected[1] = Y * (self.movmentSpeed * 5)
 
         # Change to new direction
         if self.nextDirection == "n":
@@ -153,6 +153,12 @@ class Player:
                 world.squares.remove(p)
                 break"""
 
+        # Death from ghost touch
+        for g in ghosts:
+            if BoundingBox.pointWithin(self.boundingBox, g.boundingBox):
+                print("Death")
+                return True
+
         # Update animation only if the player hasnt collided with anything
         if self.lastFrameTime + self.animationDelay < time.time():
             self.frame = not self.frame
@@ -164,3 +170,6 @@ class Player:
         # Move the box to the projected
         self.box.move(projected[0], projected[1])
         self.boundingBox.move(projected[0], projected[1])
+
+        # Return false, (alive)
+        return False

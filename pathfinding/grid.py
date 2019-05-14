@@ -50,6 +50,22 @@ class Grid:
         path = []
         reached = False
 
+        # Debug
+        if window != None:
+            r = Rectangle(Point(startNode.gridX * self.xScale + self.xPos, startNode.gridY * self.yScale + self.yPos),
+                          Point(startNode.gridX * self.xScale + self.xScale + self.xPos,
+                                startNode.gridY * self.yScale + self.yScale + self.yPos))
+            r.setWidth(4)
+            r.setFill("purple")
+            r.draw(window)
+
+            r = Rectangle(Point(endNode.gridX * self.xScale + self.xPos, endNode.gridY * self.yScale + self.yPos),
+                          Point(endNode.gridX * self.xScale + self.xScale + self.xPos,
+                                endNode.gridY * self.yScale + self.yScale + self.yPos))
+            r.setWidth(4)
+            r.setFill("green")
+            r.draw(window)
+
         # Get the start of the nodes
         lowestNode = openNodes[0]
         lowestIndex = 0
@@ -85,8 +101,7 @@ class Grid:
             neighbors = endNode.getNeighbors(self.nodeList)
             if lowestNode in neighbors:
                 reached = True
-                print(reached)
-                #path.reverse()
+                print("Path found!")
                 return path
                 break
             else:
@@ -97,15 +112,11 @@ class Grid:
                     if neighbor in closedNodes or neighbor.wall == True:
                         continue
 
-                    # Update it if its a quicker path (later only if needed)
-                    if neighbor in openNodes and lowestNode.f < neighbor.g:
-                        openNodes.remove(neighbor)
-                        closedNodes.append(neighbor)
-                        closedNodes[-1].parent = lowestNode
+
 
                     # Add and compute score if its not calculated yet
                     if neighbor in closedNodes and neighbor in openNodes:
-                        print("this shouldnt happen")
+                        print("this shouldn't happen")
                     else:
                         openNodes.append(neighbor)
                         openNodes[-1].calculateGH(startNode, endNode)
@@ -116,8 +127,6 @@ class Grid:
                 # No path
                 return [startNode]
                 break
-
-            #sleep(0.05)
 
     def setWall(self, x, y, isWall = True, window = None):
         """Sets if the node is wall"""
