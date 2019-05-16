@@ -42,7 +42,7 @@ class Grid:
         """Adds node to the nodelist"""
         self.nodeList.append(node)
 
-    def pathFind(self, startNode, endNode, window = None):
+    def pathFind(self, startNode, endNode, window = None, reversed = False):
         """Path finds from one node to another"""
         # Create nodes around the startNode and select the one with the lowest value
         openNodes = [startNode]
@@ -101,7 +101,10 @@ class Grid:
             neighbors = endNode.getNeighbors(self.nodeList)
             if lowestNode in neighbors:
                 reached = True
-                print("Path found!")
+
+                if reversed == True:
+                    path.reverse()
+
                 return path
                 break
             else:

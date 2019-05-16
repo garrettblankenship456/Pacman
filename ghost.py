@@ -19,11 +19,18 @@ class Ghost(object):
         self.ghostPathIndex = 0
         self.path = []
         self.lastTracked = 0
+        self.scared = False
+        self.lastScared = 0
 
     def drawGhost(self, win):
         self.image1.draw(win)
         time.sleep(0.1)
         self.image1.undraw()
+
+    def scare(self):
+        """Scares the ghost"""
+        self.scared = True
+        self.lastScared = time.time()
 
     def moveGhost(self, window, world, targetPos, multiplier = 1):
         for i in self.images:
@@ -80,7 +87,7 @@ class Ghost(object):
 
     def update(self, window, player, world, deltaTime):
         """Updates the ghost entirely, moves it and path finds accordingly"""
-        if self.ghostPathIndex > len(self.path) - 1 or time.time() > self.lastTracked + 15:
+        if self.ghostPathIndex > len(self.path) - 1 or time.time() > self.lastTracked + 15 or self.scared:
             self.ghostPathIndex = 0
 
             plyGridX = int((player.boundingBox.pos.getX()) // world.nodeGrid.xScale) - 1
@@ -88,15 +95,24 @@ class Ghost(object):
             ghostGridX = int((self.boundingBox.pos.getX()) // world.nodeGrid.xScale) - 1
             ghostGridY = int((self.boundingBox.pos.getY()) // world.nodeGrid.yScale) + 1
 
+            if self.scared == True:
+                # Make ghost run away
+
+                # Reset the scared factor from a power pellet
+                if time.time() > self.lastScared + 5:
+                    self.scared = False
+                return
+
             try:
-                self.path = world.nodeGrid.pathFind(world.nodeGrid.nodeList[ghostGridX][ghostGridY], world.nodeGrid.nodeList[plyGridX][plyGridY])
+                self.path = world.nodeGrid.pathFind(world.nodeGrid.nodeList[ghostGridX][ghostGridY], world.nodeGrid.nodeList[plyGridX][plyGridY], reversed = self.scared)
             except:
                 print("error")
 
             self.lastTracked = time.time()
 
         if self.ghostPathIndex < len(self.path) or self.lastTracked == 0:
-            self.moveGhost(window, world, Point(self.path[self.ghostPathIndex].realPosX, self.path[self.ghostPathIndex].realPosY), 835 * deltaTime)
+            if self.scared == False:
+                self.moveGhost(window, world, Point(self.path[self.ghostPathIndex].realPosX, self.path[self.ghostPathIndex].realPosY), 835 * deltaTime)
 
         if BoundingBox.pointWithin(self.boundingBox, BoundingBox(Point(self.path[self.ghostPathIndex].realPosX, self.path[self.ghostPathIndex].realPosY), Point(world.nodeGrid.xScale, world.nodeGrid.yScale))):
             self.ghostPathIndex += 1

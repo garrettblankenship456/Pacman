@@ -17,11 +17,11 @@ def main():
 
     # Initialize world
     world = World(window)
-    deltaMul = world.render(window)
+    world.render(window)
 
     # Initialize scene objects
     # Player
-    player = Player()
+    player = Player(window)
     dead = False
 
     # Deltatime
@@ -55,6 +55,11 @@ def main():
                 player.move('w')
             if "d" in keys:
                 player.move('e')
+            if "x" in keys:
+                blinky.scare()
+                clyde.scare()
+                inky.scare()
+                pinky.scare()
         else:
             sleep(1)
             break
