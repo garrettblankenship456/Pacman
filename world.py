@@ -124,6 +124,7 @@ class World:
     def render(self, window):
         """Draws world to the GraphWin given"""
         # Draw background image
+        deltaMul = 0
         #self.background.draw(window)
 
         # Draw nav nodes
@@ -132,10 +133,14 @@ class World:
 
         for poly in self.worldPolys:
             poly.draw(window)
+            deltaMul += 1
         #for b in self.hitboxes:
             #b.debugDraw(window)
         #for s in self.squares:
             #s.draw(window)
+
+        # Return the count of drawn items
+        return deltaMul
 
     def isCollided(self, box):
         """Checks if a point is in any rectangles"""

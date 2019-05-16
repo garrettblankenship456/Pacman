@@ -16,7 +16,8 @@ class Player:
         self.projectedBox = BoundingBox(Point(config.WINDOW_WIDTH / 2 - 15, 655), Point(size, size))
         self.direction = "e"
         self.nextDirection = "e"
-        self.movmentSpeed = 0.15
+        #self.movmentSpeed = 0.15
+        self.movmentSpeed = 120
         self.score = 0
 
         # Animation variables
@@ -54,7 +55,7 @@ class Player:
         if self.direction == 'n':
             # Calculate velocities
             projected[0] = 0
-            projected[1] = -self.movmentSpeed
+            projected[1] = -self.movmentSpeed * deltaTime
 
             # Draw image
             if self.frame == 0:
@@ -64,7 +65,7 @@ class Player:
         if self.direction == 's':
             # Calculate velocities
             projected[0] = 0
-            projected[1] = self.movmentSpeed
+            projected[1] = self.movmentSpeed * deltaTime
 
             # Draw image
             if self.frame == 0:
@@ -73,7 +74,7 @@ class Player:
                 self.images[2].draw(window)
         if self.direction == 'e':
             # Calculate velocities
-            projected[0] = self.movmentSpeed
+            projected[0] = self.movmentSpeed * deltaTime
             projected[1] = 0
 
             # Draw image
@@ -83,7 +84,7 @@ class Player:
                 self.images[3].draw(window)
         if self.direction == 'w':
             # Calculate velocities
-            projected[0] = -self.movmentSpeed
+            projected[0] = -self.movmentSpeed * deltaTime
             projected[1] = 0
 
             # Draw image
@@ -114,15 +115,22 @@ class Player:
 
         # Check collision based on projected position
         collision, box = world.isCollided(self.projectedBox)
-        nCollision, box = world.isCollided(northProjection)
-        sCollision, box = world.isCollided(southProjection)
-        eCollision, box = world.isCollided(eastProjection)
-        wCollision, box = world.isCollided(westProjection)
+        nCollision, box1 = world.isCollided(northProjection)
+        sCollision, box2 = world.isCollided(southProjection)
+        eCollision, box3 = world.isCollided(eastProjection)
+        wCollision, box4 = world.isCollided(westProjection)
 
         if collision:
+            # Get intersection
+            xIntersect = min(box.pos.getX() + box.size.getX(), self.boundingBox.pos.getX() + self.boundingBox.size.getX()) - max(box.pos.getX(), self.boundingBox.pos.getX())
+            yIntersect = min(box.pos.getY() + box.size.getY(), self.boundingBox.pos.getY() + self.boundingBox.size.getY()) - max(box.pos.getY(), self.boundingBox.pos.getY())
+
             # Zero out velocity
-            projected[0] = X * (self.movmentSpeed * 5)
-            projected[1] = Y * (self.movmentSpeed * 5)
+            if not X == 0:
+                projected[0] = xIntersect * (X * 10)
+
+            if not Y == 0:
+                projected[1] = yIntersect * (Y * 10)
 
         # Change to new direction
         if self.nextDirection == "n":

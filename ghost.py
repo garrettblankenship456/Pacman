@@ -78,7 +78,7 @@ class Ghost(object):
 
         self.boundingBox.move(X, Y)
 
-    def update(self, window, player, world):
+    def update(self, window, player, world, deltaTime):
         """Updates the ghost entirely, moves it and path finds accordingly"""
         if self.ghostPathIndex > len(self.path) - 1 or time.time() > self.lastTracked + 15:
             self.ghostPathIndex = 0
@@ -96,7 +96,7 @@ class Ghost(object):
             self.lastTracked = time.time()
 
         if self.ghostPathIndex < len(self.path) or self.lastTracked == 0:
-            self.moveGhost(window, world, Point(self.path[self.ghostPathIndex].realPosX, self.path[self.ghostPathIndex].realPosY), 1.2)
+            self.moveGhost(window, world, Point(self.path[self.ghostPathIndex].realPosX, self.path[self.ghostPathIndex].realPosY), 835 * deltaTime)
 
         if BoundingBox.pointWithin(self.boundingBox, BoundingBox(Point(self.path[self.ghostPathIndex].realPosX, self.path[self.ghostPathIndex].realPosY), Point(world.nodeGrid.xScale, world.nodeGrid.yScale))):
             self.ghostPathIndex += 1

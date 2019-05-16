@@ -17,7 +17,7 @@ def main():
 
     # Initialize world
     world = World(window)
-    world.render(window)
+    deltaMul = world.render(window)
 
     # Initialize scene objects
     # Player
@@ -63,22 +63,23 @@ def main():
         currTime = time.time()
         deltaTime = currTime - lastTime
         lastTime = currTime
+        #print(deltaTime)
 
         # Enemy path finding
         if time.time() > startTime + 5:
-            blinky.update(window, player, world)
+            blinky.update(window, player, world, deltaTime)
 
         if time.time() > startTime + 10:
-            clyde.update(window, player, world)
+            clyde.update(window, player, world, deltaTime)
 
         if time.time() > startTime + 15:
-            inky.update(window, player, world)
+            inky.update(window, player, world, deltaTime)
 
         if time.time() > startTime + 20:
-            pinky.update(window, player, world)
+            pinky.update(window, player, world, deltaTime)
 
         # Update window and player
-        dead = player.update(window, world, 1, ghosts)
+        dead = player.update(window, world, deltaTime, ghosts)
         window.update()
 
     # Graceful exit
