@@ -71,7 +71,7 @@ def main():
         #print(deltaTime)
 
         # Enemy path finding
-        if time.time() > startTime + 5:
+        if time.time() > startTime + 1:
             blinky.update(window, player, world, deltaTime)
 
         if time.time() > startTime + 10:

@@ -2,6 +2,7 @@ from graphics import *
 from world import *
 from boundingbox import *
 import time
+import random
 
 class Ghost(object):
     """Ghosts"""
@@ -43,7 +44,7 @@ class Ghost(object):
         elif self.a == False:
             self.images[1].draw(window)
 
-        # Paths
+        # Paths based on if its headed to, or running from
         projected[0] = ((targetPos.getX() + 20) - (self.boundingBox.pos.getX() + self.boundingBox.size.getX() / 2)) * multiplier
         projected[1] = ((targetPos.getY() + 20) - (self.boundingBox.pos.getY() + self.boundingBox.size.getY() / 2)) * multiplier
 
@@ -97,22 +98,29 @@ class Ghost(object):
 
             if self.scared == True:
                 # Make ghost run away
+                # Gets neighbors of current node
+                currentNode = world.nodeGrid.nodeList[ghostGridX][ghostGridY]
+                neighbors = currentNode.getNeighbors(world.nodeGrid.nodeList)
+
+                # Get random neighbor
+                nextNode = neighbors[0]
+
+                self.path = [random.choice(neighbors)]
+                self.ghostPathIndex = 0
 
                 # Reset the scared factor from a power pellet
                 if time.time() > self.lastScared + 5:
                     self.scared = False
-                return
-
-            try:
-                self.path = world.nodeGrid.pathFind(world.nodeGrid.nodeList[ghostGridX][ghostGridY], world.nodeGrid.nodeList[plyGridX][plyGridY], reversed = self.scared)
-            except:
-                print("error")
+            else:
+                try:
+                    self.path = world.nodeGrid.pathFind(world.nodeGrid.nodeList[ghostGridX][ghostGridY], world.nodeGrid.nodeList[plyGridX][plyGridY], reversed = self.scared)
+                except:
+                    print("error")
 
             self.lastTracked = time.time()
 
         if self.ghostPathIndex < len(self.path) or self.lastTracked == 0:
-            if self.scared == False:
-                self.moveGhost(window, world, Point(self.path[self.ghostPathIndex].realPosX, self.path[self.ghostPathIndex].realPosY), 835 * deltaTime)
+            self.moveGhost(window, world, Point(self.path[self.ghostPathIndex].realPosX, self.path[self.ghostPathIndex].realPosY), 835 * deltaTime)
 
         if BoundingBox.pointWithin(self.boundingBox, BoundingBox(Point(self.path[self.ghostPathIndex].realPosX, self.path[self.ghostPathIndex].realPosY), Point(world.nodeGrid.xScale, world.nodeGrid.yScale))):
             self.ghostPathIndex += 1
