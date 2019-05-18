@@ -21,7 +21,7 @@ def main():
 
     # Initialize scene objects
     # Player
-    player = Player(window)
+    player = Player(window, world)
     dead = False
 
     # Deltatime

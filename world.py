@@ -42,8 +42,16 @@ class World:
             xPos = (float(pointData[0]) + config.MAP_OFFSET_X) * config.MAP_RESOLUTION_X
             yPos = (float(pointData[1]) + config.MAP_OFFSET_Y) * config.MAP_RESOLUTION_Y
 
+            # Get type
+            type = ""
+
+            if len(points) < 3:
+                type = "normal"
+            else:
+                type = points[2]
+
             # Create hitbox
-            self.squares.append(Square(Point(xPos, yPos)))
+            self.squares.append(Square(Point(xPos, yPos), type))
 
             # If mirrored append a backwards array of positions
             if self.mirrored == True:

@@ -7,10 +7,11 @@ from boundingbox import *
 # Class
 class Square:
     """Point square"""
-    def __init__(self, pos):
+    def __init__(self, pos, type):
         self.pos = Point(pos.getX() - 5, pos.getY() - 5)
         self.boundingBox = BoundingBox(pos, Point(10, 10))
         self.value = 100 # The amount of points its worth
+        self.type = type
 
         self.box = Rectangle(pos, Point(pos.getX() + 10, pos.getY() + 10))
         self.box.setFill("yellow")
