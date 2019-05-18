@@ -227,8 +227,15 @@ class Player:
         # Death from ghost touch or win from no points left
         for g in ghosts:
             if BoundingBox.pointWithin(self.boundingBox, g.boundingBox):
-                print("Death")
-                return True
+                # If they arent scared, pacman is dead
+                if g.scared == False:
+                    print("Death")
+                    return True
+                else: # They are scared so theyre worth points
+                    if g.alive == True:
+                        print("Ghost eaten")
+                        self.score += 200
+                        g.respawn(world)
 
         if len(self.foodlist) == 0:
             print("Win")

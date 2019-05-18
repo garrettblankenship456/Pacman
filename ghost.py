@@ -10,7 +10,9 @@ class Ghost(object):
         self.pos = pos
         self.name = name
         self.images = (Image(pos, "images/ghosts/" + name + "1.png"),
-                       Image(pos, "images/ghosts/" + name + "2.png"))
+                       Image(pos, "images/ghosts/" + name + "2.png"),
+                       Image(pos, "images/ghosts/scared1.png"),
+                       Image(pos, "images/ghosts/dead.png"))
         self.frame = False
         self.a = True
 
@@ -21,6 +23,8 @@ class Ghost(object):
         self.path = []
         self.lastTracked = 0
         self.scared = False
+        self.alive = True
+        self.firstTickScared = False
         self.lastScared = 0
 
     def drawGhost(self, win):
@@ -32,17 +36,10 @@ class Ghost(object):
         """Scares the ghost"""
         self.scared = True
         self.lastScared = time.time()
+        self.firstTickScared = True
 
     def moveGhost(self, window, world, targetPos, multiplier = 1):
-        for i in self.images:
-            i.undraw()
-
         projected = [0, 0]
-
-        if self.a == True:
-            self.images[0].draw(window)
-        elif self.a == False:
-            self.images[1].draw(window)
 
         # Paths based on if its headed to, or running from
         projected[0] = ((targetPos.getX() + 20) - (self.boundingBox.pos.getX() + self.boundingBox.size.getX() / 2)) * multiplier
@@ -88,39 +85,61 @@ class Ghost(object):
 
     def update(self, window, player, world, deltaTime):
         """Updates the ghost entirely, moves it and path finds accordingly"""
-        if self.ghostPathIndex > len(self.path) - 1 or time.time() > self.lastTracked + 15 or self.scared:
+        # Update images
+        for i in self.images:
+            i.undraw()
+
+        if self.alive == False:
+            self.images[3].draw(window)
+        elif self.scared == True:
+            self.images[2].draw(window)
+        elif self.a == True:
+            self.images[0].draw(window)
+        elif self.a == False:
+            self.images[1].draw(window)
+
+        if self.ghostPathIndex > len(self.path) - 1 or time.time() > self.lastTracked + 15 or self.firstTickScared == True:
             self.ghostPathIndex = 0
+            self.firstTickScared = False
 
             plyGridX = int((player.boundingBox.pos.getX()) // world.nodeGrid.xScale) - 1
             plyGridY = int((player.boundingBox.pos.getY()) // world.nodeGrid.yScale) + 1
             ghostGridX = int((self.boundingBox.pos.getX()) // world.nodeGrid.xScale) - 1
             ghostGridY = int((self.boundingBox.pos.getY()) // world.nodeGrid.yScale) + 1
 
+            # Reset alive if its made it
+            self.alive = True
+
             if self.scared == True:
-                # Make ghost run away
-                # Gets neighbors of current node
-                currentNode = world.nodeGrid.nodeList[ghostGridX][ghostGridY]
-                neighbors = currentNode.getNeighbors(world.nodeGrid.nodeList)
+                # Make ghost to a random point
+                randNode = world.nodeGrid.randomNode()
+                self.path = world.nodeGrid.pathFind(world.nodeGrid.nodeList[ghostGridX][ghostGridY], randNode)
 
-                # Get random neighbor
-                nextNode = neighbors[0]
-
-                self.path = [random.choice(neighbors)]
-                self.ghostPathIndex = 0
-
-                # Reset the scared factor from a power pellet
-                if time.time() > self.lastScared + 5:
+                # End scared status
+                if time.time() > self.lastScared + 7:
                     self.scared = False
             else:
                 try:
-                    self.path = world.nodeGrid.pathFind(world.nodeGrid.nodeList[ghostGridX][ghostGridY], world.nodeGrid.nodeList[plyGridX][plyGridY], reversed = self.scared)
+                    self.path = world.nodeGrid.pathFind(world.nodeGrid.nodeList[ghostGridX][ghostGridY], world.nodeGrid.nodeList[plyGridX][plyGridY])
                 except:
                     print("error")
 
             self.lastTracked = time.time()
 
         if self.ghostPathIndex < len(self.path) or self.lastTracked == 0:
-            self.moveGhost(window, world, Point(self.path[self.ghostPathIndex].realPosX, self.path[self.ghostPathIndex].realPosY), 835 * deltaTime)
+            self.moveGhost(window, world, Point(self.path[self.ghostPathIndex].realPosX, self.path[self.ghostPathIndex].realPosY), (835 - (120 * self.scared)) * deltaTime)
 
         if BoundingBox.pointWithin(self.boundingBox, BoundingBox(Point(self.path[self.ghostPathIndex].realPosX, self.path[self.ghostPathIndex].realPosY), Point(world.nodeGrid.xScale, world.nodeGrid.yScale))):
             self.ghostPathIndex += 1
+
+    def respawn(self, world):
+        """Path finds back to the home"""
+        # Get position
+        ghostGridX = int((self.boundingBox.pos.getX()) // world.nodeGrid.xScale) - 1
+        ghostGridY = int((self.boundingBox.pos.getY()) // world.nodeGrid.yScale) + 1
+
+        # Set attributes and path find
+        self.alive = False
+        self.ghostPathIndex = 0
+        self.lastTracked = time.time() + 3489326784
+        self.path = world.nodeGrid.pathFind(world.nodeGrid.nodeList[ghostGridX][ghostGridY], world.nodeGrid.nodeList[31][34])

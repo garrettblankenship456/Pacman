@@ -114,9 +114,7 @@ class Grid:
                     # Ignore if closed
                     if neighbor in closedNodes or neighbor.wall == True:
                         continue
-
-
-
+                        
                     # Add and compute score if its not calculated yet
                     if neighbor in closedNodes and neighbor in openNodes:
                         print("this shouldn't happen")
@@ -140,6 +138,16 @@ class Grid:
             r = Rectangle(Point(x * self.xScale, y * self.yScale), Point(x * self.xScale + self.xScale, y * self.yScale + self.yScale))
             r.setFill("red")
             r.draw(window)
+
+    def randomNode(self):
+        """Returns a random non-wall node"""
+        availableNodes = []
+        for xNode in self.nodeList:
+            for node in xNode:
+                if node.wall == False:
+                    availableNodes.append(node)
+
+        return random.choice(availableNodes)
 
     def drawNodes(self, window):
         """Debug function to draw all the nodes to the window"""
