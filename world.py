@@ -39,7 +39,7 @@ class World:
 
             # Get XY from points
             pointData = points[0].split(",")
-            xPos = (float(pointData[0]) + config.MAP_OFFSET_X) * config.MAP_RESOLUTION_X
+            xPos = (float(pointData[0]) + 2) * config.MAP_RESOLUTION_X
             yPos = (float(pointData[1]) + config.MAP_OFFSET_Y) * config.MAP_RESOLUTION_Y
 
             # Get type
@@ -132,23 +132,18 @@ class World:
     def render(self, window):
         """Draws world to the GraphWin given"""
         # Draw background image
-        deltaMul = 0
-        #self.background.draw(window)
+        self.background.draw(window)
 
         # Draw nav nodes
         #self.nodeGrid.drawGrid(window)
         #self.nodeGrid.drawNodes(window)
 
-        for poly in self.worldPolys:
-            poly.draw(window)
-            deltaMul += 1
+        #for poly in self.worldPolys:
+            #poly.draw(window)
         #for b in self.hitboxes:
             #b.debugDraw(window)
         #for s in self.squares:
             #s.draw(window)
-
-        # Return the count of drawn items
-        return deltaMul
 
     def isCollided(self, box):
         """Checks if a point is in any rectangles"""

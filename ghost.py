@@ -16,7 +16,7 @@ class Ghost(object):
         self.frame = False
         self.a = True
 
-        self.boundingBox = BoundingBox(Point(pos.getX() - (39.5 / 2), pos.getY() - (39.5 / 2)), Point(39.5, 39.5))
+        self.boundingBox = BoundingBox(Point(pos.getX() - (39 / 2), pos.getY() - (39 / 2)), Point(39, 39))
 
         # Path finding variables
         self.ghostPathIndex = 0
@@ -101,6 +101,7 @@ class Ghost(object):
         if self.ghostPathIndex > len(self.path) - 1 or time.time() > self.lastTracked + 15 or self.firstTickScared == True:
             self.ghostPathIndex = 0
             self.firstTickScared = False
+            print("newpath")
 
             plyGridX = int((player.boundingBox.pos.getX()) // world.nodeGrid.xScale) - 1
             plyGridY = int((player.boundingBox.pos.getY()) // world.nodeGrid.yScale) + 1
@@ -108,7 +109,9 @@ class Ghost(object):
             ghostGridY = int((self.boundingBox.pos.getY()) // world.nodeGrid.yScale) + 1
 
             # Reset alive if its made it
-            self.alive = True
+            if self.alive == False:
+                self.alive = True
+                self.scared = False
 
             if self.scared == True:
                 # Make ghost to a random point
@@ -127,7 +130,8 @@ class Ghost(object):
             self.lastTracked = time.time()
 
         if self.ghostPathIndex < len(self.path) or self.lastTracked == 0:
-            self.moveGhost(window, world, Point(self.path[self.ghostPathIndex].realPosX, self.path[self.ghostPathIndex].realPosY), (835 - (120 * self.scared)) * deltaTime)
+            notAlive = not self.alive
+            self.moveGhost(window, world, Point(self.path[self.ghostPathIndex].realPosX, self.path[self.ghostPathIndex].realPosY), (835 - (240 * self.scared) + (600 * notAlive)) * deltaTime)
 
         if BoundingBox.pointWithin(self.boundingBox, BoundingBox(Point(self.path[self.ghostPathIndex].realPosX, self.path[self.ghostPathIndex].realPosY), Point(world.nodeGrid.xScale, world.nodeGrid.yScale))):
             self.ghostPathIndex += 1

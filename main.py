@@ -68,10 +68,10 @@ def main():
         currTime = time.time()
         deltaTime = currTime - lastTime
         lastTime = currTime
-        #print(deltaTime)
+        print(deltaTime)
 
         # Enemy path finding
-        if time.time() > startTime + 1:
+        if time.time() > startTime + 5:
             blinky.update(window, player, world, deltaTime)
 
         if time.time() > startTime + 10:

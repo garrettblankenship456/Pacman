@@ -8,6 +8,7 @@ from world import *
 def main():
     # Initialize window
     window = GraphWin("Pacman navmesh editor", config.WINDOW_WIDTH, config.WINDOW_HEIGHT, autoflush=False)
+    window.setBackground("green")
 
     # Draw trace image
     #trace = Image(Point(config.WINDOW_WIDTH / 2, config.WINDOW_HEIGHT / 2), "images/photo11.png")

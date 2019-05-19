@@ -10,14 +10,14 @@ from food import *
 
 # Class defintion
 class Player:
-    def __init__(self, window, world, size = 39.5):
+    def __init__(self, window, world, size = 39):
         # Initialize variables
         self.box = Rectangle(Point(0, 0), Point(size, size))
         self.boundingBox = BoundingBox(Point(config.WINDOW_WIDTH / 2 - 15, 655), Point(size, size))
         self.projectedBox = BoundingBox(Point(config.WINDOW_WIDTH / 2 - 15, 655), Point(size, size))
         self.direction = "e"
         self.nextDirection = "e"
-        self.movmentSpeed = 120
+        self.movmentSpeed = 85
         self.score = 0
 
         # Initialize food list
@@ -66,25 +66,25 @@ class Player:
 
         # Change to new direction
         if self.nextDirection == "n":
-            northProjection = BoundingBox(Point(self.boundingBox.pos.getX(), self.boundingBox.pos.getY() - 1), self.boundingBox.size)
+            northProjection = BoundingBox(Point(self.boundingBox.pos.getX(), self.boundingBox.pos.getY() - 2), self.boundingBox.size)
             nCollision, box1 = world.isCollided(northProjection)
 
             if nCollision == False:
                 self.direction = self.nextDirection
         elif self.nextDirection == "s":
-            southProjection = BoundingBox(Point(self.boundingBox.pos.getX(), self.boundingBox.pos.getY() + 1), self.boundingBox.size)
+            southProjection = BoundingBox(Point(self.boundingBox.pos.getX(), self.boundingBox.pos.getY() + 2), self.boundingBox.size)
             sCollision, box2 = world.isCollided(southProjection)
 
             if sCollision == False:
                 self.direction = self.nextDirection
         elif self.nextDirection == "e":
-            eastProjection = BoundingBox(Point(self.boundingBox.pos.getX() + 1, self.boundingBox.pos.getY()), self.boundingBox.size)
+            eastProjection = BoundingBox(Point(self.boundingBox.pos.getX() + 2, self.boundingBox.pos.getY()), self.boundingBox.size)
             eCollision, box3 = world.isCollided(eastProjection)
 
             if eCollision == False:
                 self.direction = self.nextDirection
         elif self.nextDirection == "w":
-            westProjection = BoundingBox(Point(self.boundingBox.pos.getX() - 1, self.boundingBox.pos.getY()), self.boundingBox.size)
+            westProjection = BoundingBox(Point(self.boundingBox.pos.getX() - 2, self.boundingBox.pos.getY()), self.boundingBox.size)
             wCollision, box4 = world.isCollided(westProjection)
 
             if wCollision == False:
