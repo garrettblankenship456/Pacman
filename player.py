@@ -11,14 +11,19 @@ from food import *
 # Class defintion
 class Player:
     def __init__(self, window, world, size = 39):
+        # Starting positions
+        startX = config.WINDOW_WIDTH / 2 - 15
+        startY = 525
+
         # Initialize variables
         self.box = Rectangle(Point(0, 0), Point(size, size))
-        self.boundingBox = BoundingBox(Point(config.WINDOW_WIDTH / 2 - 15, 655), Point(size, size))
-        self.projectedBox = BoundingBox(Point(config.WINDOW_WIDTH / 2 - 15, 655), Point(size, size))
+        self.boundingBox = BoundingBox(Point(startX, startY), Point(size, size))
+        self.projectedBox = BoundingBox(Point(startX, startY), Point(size, size))
         self.direction = "e"
         self.nextDirection = "e"
         self.movmentSpeed = 85
         self.score = 0
+        self.life = 3 # Player has 3 lifes
 
         # Initialize food list
         self.foodlist = []
@@ -30,7 +35,7 @@ class Player:
                 f2 = Food(square.pos.getX(), square.pos.getY(), "orange", "blue", window)
                 f2.powerpellet = True
             else:
-                f2 = Food(square.pos.getX(), square.pos.getY(), "red", "blue", window)
+                f2 = Food(square.pos.getX(), square.pos.getY(), "yellow", "blue", window)
 
             self.foodlist.append(f2)
 
@@ -45,9 +50,9 @@ class Player:
         self.lastFrameTime = time.time()
 
         # Move graphics box and setfill
-        self.box.move(config.WINDOW_WIDTH / 2 - 15, 655)
+        self.box.move(startX, startY)
         for p in self.images:
-            p.move(config.WINDOW_WIDTH / 2 - 15 + size / 2, 655 + size / 2)
+            p.move(startX + size / 2, startY + size / 2)
 
     def draw(self, window):
         """Draws player to the screen"""
@@ -57,6 +62,14 @@ class Player:
         """Moves player direction"""
         # Get projection position and see if it collides
         self.nextDirection = direction
+
+    def respawn(self):
+        """Respawns the player"""
+        toPos = Point((config.WINDOW_WIDTH / 2 - 15) - self.boundingBox.pos.getX(), (525 - self.boundingBox.pos.getY()))
+        self.boundingBox.move(toPos.getX(), toPos.getY())
+
+        for i in self.images:
+            i.move(toPos.getX(), toPos.getY())
 
     def update(self, window, world, deltaTime, ghosts):
         """Updates the player"""
@@ -191,8 +204,15 @@ class Player:
             if BoundingBox.pointWithin(self.boundingBox, g.boundingBox):
                 # If they arent scared, pacman is dead
                 if g.scared == False:
-                    print("Death")
-                    return True
+                    # Count down
+                    self.life -= 1
+
+                    # Close game if less than 3 lifes
+                    if self.life < 1:
+                        return True
+                    else:
+                        time.sleep(1)
+                        self.respawn()
                 else: # They are scared so theyre worth points
                     if g.alive == True:
                         print("Ghost eaten")

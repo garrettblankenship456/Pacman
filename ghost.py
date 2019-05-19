@@ -6,7 +6,7 @@ import random
 
 class Ghost(object):
     """Ghosts"""
-    def __init__(self, name, pos):
+    def __init__(self, name, pos, window):
         self.pos = pos
         self.name = name
         self.images = (Image(pos, "images/ghosts/" + name + "1.png"),
@@ -15,6 +15,10 @@ class Ghost(object):
                        Image(pos, "images/ghosts/dead.png"))
         self.frame = False
         self.a = True
+        self.startPos = pos
+
+        # Draw the first image
+        self.images[0].draw(window)
 
         self.boundingBox = BoundingBox(Point(pos.getX() - (39 / 2), pos.getY() - (39 / 2)), Point(39, 39))
 
@@ -26,11 +30,6 @@ class Ghost(object):
         self.alive = True
         self.firstTickScared = False
         self.lastScared = 0
-
-    def drawGhost(self, win):
-        self.image1.draw(win)
-        time.sleep(0.1)
-        self.image1.undraw()
 
     def scare(self):
         """Scares the ghost"""
@@ -101,7 +100,6 @@ class Ghost(object):
         if self.ghostPathIndex > len(self.path) - 1 or time.time() > self.lastTracked + 15 or self.firstTickScared == True:
             self.ghostPathIndex = 0
             self.firstTickScared = False
-            print("newpath")
 
             plyGridX = int((player.boundingBox.pos.getX()) // world.nodeGrid.xScale) - 1
             plyGridY = int((player.boundingBox.pos.getY()) // world.nodeGrid.yScale) + 1
@@ -136,14 +134,30 @@ class Ghost(object):
         if BoundingBox.pointWithin(self.boundingBox, BoundingBox(Point(self.path[self.ghostPathIndex].realPosX, self.path[self.ghostPathIndex].realPosY), Point(world.nodeGrid.xScale, world.nodeGrid.yScale))):
             self.ghostPathIndex += 1
 
-    def respawn(self, world):
+    def respawn(self, world, force = False):
         """Path finds back to the home"""
-        # Get position
-        ghostGridX = int((self.boundingBox.pos.getX()) // world.nodeGrid.xScale) - 1
-        ghostGridY = int((self.boundingBox.pos.getY()) // world.nodeGrid.yScale) + 1
+        if force == False:
+            # Get position
+            ghostGridX = int((self.boundingBox.pos.getX()) // world.nodeGrid.xScale) - 1
+            ghostGridY = int((self.boundingBox.pos.getY()) // world.nodeGrid.yScale) + 1
 
-        # Set attributes and path find
-        self.alive = False
-        self.ghostPathIndex = 0
-        self.lastTracked = time.time() + 3489326784
-        self.path = world.nodeGrid.pathFind(world.nodeGrid.nodeList[ghostGridX][ghostGridY], world.nodeGrid.nodeList[31][34])
+            # Set attributes and path find
+            self.alive = False
+            self.ghostPathIndex = 0
+            self.lastTracked = time.time() + 3489326784 # Forces the last tracked to always be the most
+            self.path = world.nodeGrid.pathFind(world.nodeGrid.nodeList[ghostGridX][ghostGridY], world.nodeGrid.nodeList[31][34])
+        else:
+            # Get position
+            toX = self.startPos.getX() - self.boundingBox.pos.getX() - (39 / 2)
+            toY = self.startPos.getY() - self.boundingBox.pos.getY() - (39 / 2)
+
+            self.alive = True
+            self.scared = False
+            self.ghostPathIndex = 0
+            self.lastTime = time.time() + 321312412
+
+            # Move it all
+            self.boundingBox.move(toX, toY)
+
+            for i in self.images:
+                i.move(toX, toY)
