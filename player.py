@@ -26,16 +26,16 @@ class Player:
         self.life = 3 # Player has 3 lifes
 
         # Initialize food list
-        self.foodlist = []
+        self.foodlist = [Food(1, 1, "red", "blue", window)]
 
         for square in world.squares:
             f2 = None
 
             if square.type == "powerpellet":
-                f2 = Food(square.pos.getX(), square.pos.getY(), "orange", "blue", window)
+                f2 = Food(square.pos.getX(), square.pos.getY(), "black", "blue", window)
                 f2.powerpellet = True
             else:
-                f2 = Food(square.pos.getX(), square.pos.getY(), "yellow", "blue", window)
+                f2 = Food(square.pos.getX(), square.pos.getY(), "black", "blue", window)
 
             self.foodlist.append(f2)
 
@@ -191,7 +191,7 @@ class Player:
                     for g in ghosts:
                         g.scare()
 
-                i.undrawFood()
+                i.drawFood()
 
                 # Remove food
                 self.foodlist.remove(i)
@@ -213,6 +213,12 @@ class Player:
                     else:
                         time.sleep(1)
                         self.respawn()
+
+                        # Respawn all the ghosts
+                        for g in ghosts:
+                            g.respawn(world, True)
+
+                        return 2
                 else: # They are scared so theyre worth points
                     if g.alive == True:
                         print("Ghost eaten")

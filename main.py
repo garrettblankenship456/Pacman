@@ -20,7 +20,7 @@ def main():
     world.render(window)
 
     # Initialize game state
-    gameState = 1 # 0 = Main menu, 1 = Gameplay, 2 = End game
+    gameState = 0 # 0 = Main menu, 1 = Gameplay, 2 = End game
 
     # Initialize scene objects
     # Player
@@ -33,9 +33,9 @@ def main():
 
     # Create ghosts
     blinky = Ghost("blinky", Point(config.WINDOW_WIDTH / 2, 283), window)
-    clyde = Ghost("clyde", Point(config.WINDOW_WIDTH / 2 - 35, config.WINDOW_HEIGHT / 2 - 27), window)
+    clyde = Ghost("clyde", Point(config.WINDOW_WIDTH / 2 - 5, config.WINDOW_HEIGHT / 2 - 27), window)
     inky = Ghost("inky", Point(config.WINDOW_WIDTH / 2, config.WINDOW_HEIGHT / 2 - 27), window)
-    pinky = Ghost("pinky", Point(config.WINDOW_WIDTH / 2 + 35, config.WINDOW_HEIGHT / 2 - 27), window)
+    pinky = Ghost("pinky", Point(config.WINDOW_WIDTH / 2 + 5, config.WINDOW_HEIGHT / 2 - 27), window)
     ghosts = (blinky, clyde, inky, pinky)
     startTime = time.time() # Time the ghost started, slow release
 
@@ -43,7 +43,7 @@ def main():
     score = Text(Point(config.WINDOW_WIDTH / 2, 25), "00")
     score.setTextColor("white")
     score.draw(window)
-    #startMenu = Image(Point(config.WINDOW_WIDTH / 2, config.WINDOW_HEIGHT / 2), "images/menu.png")
+    startMenu = Image(Point(config.WINDOW_WIDTH / 2, config.WINDOW_HEIGHT / 2), "images/menu.JPG")
     #endScreen = Image(Point(config.WINDOW_WIDTH / 2, config.WINDOW_HEIGHT / 2), "images/end.png")
 
     # Main loop
@@ -51,8 +51,10 @@ def main():
         # Run the function based on the game state
         if gameState == 0:
             # Check for key input
+            startMenu.draw(window)
             window.getKey()
             gameState = 1
+            startMenu.undraw()
         elif gameState == 1:
             # Update score value
             score.setText(int(player.score))
@@ -76,11 +78,11 @@ def main():
                 if "d" in keys:
                     player.move('e')
                 if "x" in keys:
-                    blinky.respawn(world)
-                    clyde.respawn(world)
-                    inky.respawn(world)
-                    pinky.respawn(world)
-            else:
+                    blinky.scare()
+                    clyde.scare()
+                    inky.scare()
+                    pinky.scare()
+            elif dead == True:
                 sleep(1)
                 gameState = 2
                 continue
@@ -89,7 +91,12 @@ def main():
             currTime = time.time()
             deltaTime = currTime - lastTime
             lastTime = currTime
-            #print(deltaTime)
+            print(deltaTime)
+
+            # Respawning
+            if dead == 2:
+                startTime = time.time()
+                deltaTime = 0
 
             # Enemy path finding
             if time.time() > startTime + 0:

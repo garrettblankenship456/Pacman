@@ -16,6 +16,7 @@ class Ghost(object):
         self.frame = False
         self.a = True
         self.startPos = pos
+        print(self.startPos)
 
         # Draw the first image
         self.images[0].draw(window)
