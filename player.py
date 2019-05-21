@@ -24,9 +24,11 @@ class Player:
         self.movmentSpeed = 85
         self.score = 0
         self.life = 3 # Player has 3 lifes
+        self.alive = False
 
         # Initialize food list
-        self.foodlist = [Food(1, 1, "red", "blue", window)]
+        self.foodlist = []
+        self.derenderingFood = []
 
         for square in world.squares:
             f2 = None
@@ -68,15 +70,8 @@ class Player:
         toPos = Point((config.WINDOW_WIDTH / 2 - 15) - self.boundingBox.pos.getX(), (525 - self.boundingBox.pos.getY()))
         self.boundingBox.move(toPos.getX(), toPos.getY())
 
-        for i in self.images:
-            i.move(toPos.getX(), toPos.getY())
-
-    def update(self, window, world, deltaTime, ghosts):
+    def update(self, world, deltaTime, ghosts):
         """Updates the player"""
-        # Undraw images
-        for p in self.images:
-            p.undraw()
-
         # Change to new direction
         if self.nextDirection == "n":
             northProjection = BoundingBox(Point(self.boundingBox.pos.getX(), self.boundingBox.pos.getY() - 2), self.boundingBox.size)
@@ -109,42 +104,18 @@ class Player:
             # Calculate velocities
             projected[0] = 0
             projected[1] = -self.movmentSpeed * deltaTime
-
-            # Draw image
-            if self.frame == 0:
-                self.images[0].draw(window)
-            else:
-                self.images[1].draw(window)
         if self.direction == 's':
             # Calculate velocities
             projected[0] = 0
             projected[1] = self.movmentSpeed * deltaTime
-
-            # Draw image
-            if self.frame == 0:
-                self.images[0].draw(window)
-            else:
-                self.images[2].draw(window)
         if self.direction == 'e':
             # Calculate velocities
             projected[0] = self.movmentSpeed * deltaTime
             projected[1] = 0
-
-            # Draw image
-            if self.frame == 0:
-                self.images[0].draw(window)
-            else:
-                self.images[3].draw(window)
         if self.direction == 'w':
             # Calculate velocities
             projected[0] = -self.movmentSpeed * deltaTime
             projected[1] = 0
-
-            # Draw image
-            if self.frame == 0:
-                self.images[0].draw(window)
-            else:
-                self.images[4].draw(window)
 
         # Get normalized movement
         X = 0
@@ -191,7 +162,7 @@ class Player:
                     for g in ghosts:
                         g.scare()
 
-                i.drawFood()
+                self.derenderingFood.append(i)
 
                 # Remove food
                 self.foodlist.remove(i)
@@ -229,17 +200,58 @@ class Player:
             print("Win")
             return True
 
+        # Move the box to the projected
+        self.boundingBox.move(projected[0], projected[1])
+
+        # Return false, (alive)
+        return False
+
+    def render(self, window):
+        """Draws everything where its needed"""
+        # Undraw images
+        for p in self.images:
+            p.undraw()
+
+        # Redraw
+        if self.direction == 'n':
+            # Draw image
+            if self.frame == 0:
+                self.images[0].draw(window)
+            else:
+                self.images[1].draw(window)
+        if self.direction == 's':
+            # Draw image
+            if self.frame == 0:
+                self.images[0].draw(window)
+            else:
+                self.images[2].draw(window)
+        if self.direction == 'e':
+            # Draw image
+            if self.frame == 0:
+                self.images[0].draw(window)
+            else:
+                self.images[3].draw(window)
+        if self.direction == 'w':
+            # Draw image
+            if self.frame == 0:
+                self.images[0].draw(window)
+            else:
+                self.images[4].draw(window)
+
+        # Undraw all the food requested
+        for food in self.derenderingFood:
+            food.undrawFood()
+            self.derenderingFood.remove(food)
+
         # Update animation only if the player hasnt collided with anything
         if self.lastFrameTime + self.animationDelay < time.time():
             self.frame = not self.frame
             self.lastFrameTime = time.time()
 
+        # Move the position to the bounding box
+        toX = (self.boundingBox.pos.getX() - self.box.getP1().getX())
+        toY = (self.boundingBox.pos.getY() - self.box.getP1().getY())
+
+        self.box.move(toX, toY)
         for p in self.images:
-            p.move(projected[0], projected[1])
-
-        # Move the box to the projected
-        self.box.move(projected[0], projected[1])
-        self.boundingBox.move(projected[0], projected[1])
-
-        # Return false, (alive)
-        return False
+            p.move(toX, toY)

@@ -53,11 +53,6 @@ class World:
             # Create hitbox
             self.squares.append(Square(Point(xPos, yPos), type))
 
-            # If mirrored append a backwards array of positions
-            if self.mirrored == True:
-                # Create hitbox
-                self.squares.append(Square(Point(self.lineOfSymmetry * 2 - xPos, yPos)))
-
     def __genWorldData(self, levelPath):
         # Creates all the world data from file
         file = open(levelPath)
@@ -114,8 +109,8 @@ class World:
                 #poly.setFill("black")
                 self.worldPolys.append(poly)
 
-                # Create points
-                self.__genPointMap("levels/points.txt")
+        # Create points
+        self.__genPointMap("levels/points.txt")
 
     def __genNavMesh(self, levelPath):
         # Creates all the world data from file

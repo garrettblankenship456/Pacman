@@ -8,6 +8,7 @@ from boundingbox import *
 from player import *
 from ghost import *
 import time
+import threading
 
 # Main function
 def main():
@@ -45,6 +46,39 @@ def main():
     score.draw(window)
     startMenu = Image(Point(config.WINDOW_WIDTH / 2, config.WINDOW_HEIGHT / 2), "images/menu.JPG")
     #endScreen = Image(Point(config.WINDOW_WIDTH / 2, config.WINDOW_HEIGHT / 2), "images/end.png")
+
+    # Physics loop
+    def physLoop(player, world, ghosts):
+        """Updates the physics for everything, its a function for the seperate thread"""
+        global interpolation
+        timeStep = 60 / 10000
+        previous = time.time()
+        lag = 0
+        while True:
+            current = time.time()
+            elapsed = current - previous
+            previous = current
+            lag += elapsed
+
+            while lag >= timeStep:
+                # Update player
+                player.update(world, 0.01, ghosts)
+
+                # Enemy path finding
+                if time.time() > startTime + 0:
+                    blinky.update(player, world, 0.01)
+                if time.time() > startTime + 10:
+                    clyde.update(player, world, 0.01)
+                if time.time() > startTime + 15:
+                    inky.update(player, world, 0.01)
+                if time.time() > startTime + 20:
+                    pinky.update(player, world, 0.01)
+
+                lag -= timeStep
+
+    # Start thread
+    physThread = threading.Thread(target=physLoop, args=(player, world, ghosts))
+    physThread.start()
 
     # Main loop
     while True:
@@ -91,34 +125,23 @@ def main():
             currTime = time.time()
             deltaTime = currTime - lastTime
             lastTime = currTime
-            print(deltaTime)
 
-            # Respawning
-            if dead == 2:
-                startTime = time.time()
-                deltaTime = 0
-
-            # Enemy path finding
-            if time.time() > startTime + 0:
-                blinky.update(window, player, world, deltaTime)
-
-            if time.time() > startTime + 10:
-                clyde.update(window, player, world, deltaTime)
-
-            if time.time() > startTime + 15:
-                inky.update(window, player, world, deltaTime)
-
-            if time.time() > startTime + 20:
-                pinky.update(window, player, world, deltaTime)
+            # Render ghosts
+            blinky.render(window)
+            clyde.render(window)
+            inky.render(window)
+            pinky.render(window)
 
             # Update window and player
-            dead = player.update(window, world, deltaTime, ghosts)
+            dead = player.alive
+            player.render(window)
             window.update()
         elif gameState == 2:
             window.getKey()
             break
 
     # Graceful exit
+    physThread.join()
     window.close()
 
 

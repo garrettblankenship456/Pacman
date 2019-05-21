@@ -38,7 +38,7 @@ class Ghost(object):
         self.lastScared = time.time()
         self.firstTickScared = True
 
-    def moveGhost(self, window, world, targetPos, multiplier = 1):
+    def moveGhost(self, world, targetPos, multiplier = 1):
         projected = [0, 0]
 
         # Paths based on if its headed to, or running from
@@ -78,26 +78,10 @@ class Ghost(object):
         if yCollision:
             Y = 0
 
-        for i in self.images:
-            i.move(X, Y)
-
         self.boundingBox.move(X, Y)
 
-    def update(self, window, player, world, deltaTime):
+    def update(self, player, world, deltaTime):
         """Updates the ghost entirely, moves it and path finds accordingly"""
-        # Update images
-        for i in self.images:
-            i.undraw()
-
-        if self.alive == False:
-            self.images[3].draw(window)
-        elif self.scared == True:
-            self.images[2].draw(window)
-        elif self.a == True:
-            self.images[0].draw(window)
-        elif self.a == False:
-            self.images[1].draw(window)
-
         if self.ghostPathIndex > len(self.path) - 1 or time.time() > self.lastTracked + 15 or self.firstTickScared == True:
             self.ghostPathIndex = 0
             self.firstTickScared = False
@@ -130,10 +114,32 @@ class Ghost(object):
 
         if self.ghostPathIndex < len(self.path) or self.lastTracked == 0:
             notAlive = not self.alive
-            self.moveGhost(window, world, Point(self.path[self.ghostPathIndex].realPosX, self.path[self.ghostPathIndex].realPosY), (835 - (240 * self.scared) + (600 * notAlive)) * deltaTime)
+            self.moveGhost(world, Point(self.path[self.ghostPathIndex].realPosX, self.path[self.ghostPathIndex].realPosY), (835 - (240 * self.scared) + (600 * notAlive)) * deltaTime)
 
         if BoundingBox.pointWithin(self.boundingBox, BoundingBox(Point(self.path[self.ghostPathIndex].realPosX, self.path[self.ghostPathIndex].realPosY), Point(world.nodeGrid.xScale, world.nodeGrid.yScale))):
             self.ghostPathIndex += 1
+
+    def render(self, window):
+        """Draws all the images in the correct position"""
+        # Update images
+        for i in self.images:
+            i.undraw()
+
+        if self.alive == False:
+            self.images[3].draw(window)
+        elif self.scared == True:
+            self.images[2].draw(window)
+        elif self.a == True:
+            self.images[0].draw(window)
+        elif self.a == False:
+            self.images[1].draw(window)
+
+        # Move images
+        toX = (self.boundingBox.pos.getX() - (self.images[0].getAnchor().getX() - 20))
+        toY = (self.boundingBox.pos.getY() - (self.images[0].getAnchor().getY() - 20))
+
+        for i in self.images:
+            i.move(toX, toY)
 
     def respawn(self, world, force = False):
         """Path finds back to the home"""
@@ -159,6 +165,3 @@ class Ghost(object):
 
             # Move it all
             self.boundingBox.move(toX, toY)
-
-            for i in self.images:
-                i.move(toX, toY)

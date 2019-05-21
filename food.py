@@ -8,6 +8,7 @@ class Food(object):
         self.window = window
         self.powerpellet = False
         self.f = Rectangle(Point(self.x, self.y), Point(self.x + 12, self.y + 12))
+        self.drawFood()
     def drawFood(self):
         self.f.setFill(self.color)
         self.f.setActiveFill(self.color)
