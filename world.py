@@ -45,10 +45,10 @@ class World:
             # Get type
             type = ""
 
-            if len(points) < 3:
-                type = "normal"
+            if len(points) < 2:
+                type = False
             else:
-                type = points[2]
+                type = True
 
             # Create hitbox
             self.squares.append(Square(Point(xPos, yPos), type))

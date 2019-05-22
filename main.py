@@ -28,10 +28,6 @@ def main():
     player = Player(window, world)
     dead = False
 
-    # Deltatime
-    lastTime = time.time()
-    deltaTime = 0
-
     # Create ghosts
     blinky = Ghost("blinky", Point(config.WINDOW_WIDTH / 2, 283), window)
     clyde = Ghost("clyde", Point(config.WINDOW_WIDTH / 2 - 5, config.WINDOW_HEIGHT / 2 - 27), window)
@@ -44,14 +40,13 @@ def main():
     score = Text(Point(config.WINDOW_WIDTH / 2, 25), "00")
     score.setTextColor("white")
     score.draw(window)
-    startMenu = Image(Point(config.WINDOW_WIDTH / 2, config.WINDOW_HEIGHT / 2), "images/menu.JPG")
+    startMenu = Image(Point(config.WINDOW_WIDTH / 2, config.WINDOW_HEIGHT / 2), "images/menu.jpg")
     #endScreen = Image(Point(config.WINDOW_WIDTH / 2, config.WINDOW_HEIGHT / 2), "images/end.png")
 
     # Physics loop
     def physLoop(player, world, ghosts):
         """Updates the physics for everything, its a function for the seperate thread"""
-        global interpolation
-        timeStep = 60 / 10000
+        timeStep = 90 / 10000
         previous = time.time()
         lag = 0
         while True:
@@ -62,7 +57,7 @@ def main():
 
             while lag >= timeStep:
                 # Update player
-                player.update(world, 0.01, ghosts)
+                player.update(world, ghosts)
 
                 # Enemy path finding
                 if time.time() > startTime + 0:
@@ -75,6 +70,7 @@ def main():
                     pinky.update(player, world, 0.01)
 
                 lag -= timeStep
+                sleep(0.001)
 
     # Start thread
     physThread = threading.Thread(target=physLoop, args=(player, world, ghosts))
@@ -120,11 +116,6 @@ def main():
                 sleep(1)
                 gameState = 2
                 continue
-
-            # Update deltatime
-            currTime = time.time()
-            deltaTime = currTime - lastTime
-            lastTime = currTime
 
             # Render ghosts
             blinky.render(window)

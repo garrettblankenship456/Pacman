@@ -21,6 +21,9 @@ class BoundingBox:
         # Draws hitbox at the pos
         self.r.draw(window)
 
+    def render(self):
+        self.r.move(self.pos.getX() - self.r.getP1().getX(), self.pos.getY() - self.r.getP1().getY())
+
     def getCenter(self):
         """Returns the center"""
         return Point(self.pos.getX() + (self.size.getX() / 2), self.pos.getY() + (self.size.getY() / 2))

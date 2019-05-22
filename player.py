@@ -10,7 +10,7 @@ from food import *
 
 # Class defintion
 class Player:
-    def __init__(self, window, world, size = 39):
+    def __init__(self, window, world, size = 39.5):
         # Starting positions
         startX = config.WINDOW_WIDTH / 2 - 15
         startY = 525
@@ -21,10 +21,17 @@ class Player:
         self.projectedBox = BoundingBox(Point(startX, startY), Point(size, size))
         self.direction = "e"
         self.nextDirection = "e"
-        self.movmentSpeed = 85
+        self.movmentSpeed = 1
         self.score = 0
         self.life = 3 # Player has 3 lifes
         self.alive = False
+
+        # Initialize life images
+        self.lifeImages = [Image(Point(60, config.WINDOW_HEIGHT - 20), "images/directions/westFirst.png"),
+                           Image(Point(100, config.WINDOW_HEIGHT - 20), "images/directions/westFirst.png"),
+                           Image(Point(140, config.WINDOW_HEIGHT - 20), "images/directions/westFirst.png")]
+        for i in self.lifeImages:
+            i.draw(window)
 
         # Initialize food list
         self.foodlist = []
@@ -33,11 +40,11 @@ class Player:
         for square in world.squares:
             f2 = None
 
-            if square.type == "powerpellet":
-                f2 = Food(square.pos.getX(), square.pos.getY(), "black", "blue", window)
+            if square.type == True:
+                f2 = Food(square.pos.getX(), square.pos.getY(), "orange", "blue", window)
                 f2.powerpellet = True
             else:
-                f2 = Food(square.pos.getX(), square.pos.getY(), "black", "blue", window)
+                f2 = Food(square.pos.getX(), square.pos.getY(), "yellow", "blue", window)
 
             self.foodlist.append(f2)
 
@@ -70,51 +77,51 @@ class Player:
         toPos = Point((config.WINDOW_WIDTH / 2 - 15) - self.boundingBox.pos.getX(), (525 - self.boundingBox.pos.getY()))
         self.boundingBox.move(toPos.getX(), toPos.getY())
 
-    def update(self, world, deltaTime, ghosts):
+    def update(self, world, ghosts):
         """Updates the player"""
         # Change to new direction
         if self.nextDirection == "n":
-            northProjection = BoundingBox(Point(self.boundingBox.pos.getX(), self.boundingBox.pos.getY() - 2), self.boundingBox.size)
+            northProjection = BoundingBox(Point(self.boundingBox.pos.getX(), self.boundingBox.pos.getY() - 1), self.boundingBox.size)
             nCollision, box1 = world.isCollided(northProjection)
 
             if nCollision == False:
-                self.direction = self.nextDirection
+                self.direction = "n"
         elif self.nextDirection == "s":
-            southProjection = BoundingBox(Point(self.boundingBox.pos.getX(), self.boundingBox.pos.getY() + 2), self.boundingBox.size)
+            southProjection = BoundingBox(Point(self.boundingBox.pos.getX(), self.boundingBox.pos.getY() + 1), self.boundingBox.size)
             sCollision, box2 = world.isCollided(southProjection)
 
             if sCollision == False:
-                self.direction = self.nextDirection
+                self.direction = "s"
         elif self.nextDirection == "e":
-            eastProjection = BoundingBox(Point(self.boundingBox.pos.getX() + 2, self.boundingBox.pos.getY()), self.boundingBox.size)
+            eastProjection = BoundingBox(Point(self.boundingBox.pos.getX() + 1, self.boundingBox.pos.getY()), self.boundingBox.size)
             eCollision, box3 = world.isCollided(eastProjection)
 
             if eCollision == False:
-                self.direction = self.nextDirection
+                self.direction = "e"
         elif self.nextDirection == "w":
-            westProjection = BoundingBox(Point(self.boundingBox.pos.getX() - 2, self.boundingBox.pos.getY()), self.boundingBox.size)
+            westProjection = BoundingBox(Point(self.boundingBox.pos.getX() - 1, self.boundingBox.pos.getY()), self.boundingBox.size)
             wCollision, box4 = world.isCollided(westProjection)
 
             if wCollision == False:
-                self.direction = self.nextDirection
+                self.direction = "w"
 
         # Velocity projection
         projected = [0, 0]
         if self.direction == 'n':
             # Calculate velocities
             projected[0] = 0
-            projected[1] = -self.movmentSpeed * deltaTime
+            projected[1] = -self.movmentSpeed
         if self.direction == 's':
             # Calculate velocities
             projected[0] = 0
-            projected[1] = self.movmentSpeed * deltaTime
+            projected[1] = self.movmentSpeed
         if self.direction == 'e':
             # Calculate velocities
-            projected[0] = self.movmentSpeed * deltaTime
+            projected[0] = self.movmentSpeed
             projected[1] = 0
         if self.direction == 'w':
             # Calculate velocities
-            projected[0] = -self.movmentSpeed * deltaTime
+            projected[0] = -self.movmentSpeed
             projected[1] = 0
 
         # Get normalized movement
@@ -168,7 +175,10 @@ class Player:
                 self.foodlist.remove(i)
 
                 # Add points
-                self.score += 10
+                if i.powerpellet == True:
+                    self.score += 50
+                else:
+                    self.score += 10
 
         # Death from ghost touch or win from no points left
         for g in ghosts:
@@ -180,7 +190,12 @@ class Player:
 
                     # Close game if less than 3 lifes
                     if self.life < 1:
-                        return True
+                        time.sleep(1)
+                        self.respawn()
+                        for g in ghosts: g.respawn(world, True)
+
+                        self.alive = True
+                        break
                     else:
                         time.sleep(1)
                         self.respawn()
@@ -198,6 +213,10 @@ class Player:
 
         if len(self.foodlist) == 0:
             print("Win")
+            self.alive = False
+            return True
+
+        if self.alive == True:
             return True
 
         # Move the box to the projected
@@ -219,19 +238,19 @@ class Player:
                 self.images[0].draw(window)
             else:
                 self.images[1].draw(window)
-        if self.direction == 's':
+        elif self.direction == 's':
             # Draw image
             if self.frame == 0:
                 self.images[0].draw(window)
             else:
                 self.images[2].draw(window)
-        if self.direction == 'e':
+        elif self.direction == 'e':
             # Draw image
             if self.frame == 0:
                 self.images[0].draw(window)
             else:
                 self.images[3].draw(window)
-        if self.direction == 'w':
+        elif self.direction == 'w':
             # Draw image
             if self.frame == 0:
                 self.images[0].draw(window)
@@ -242,6 +261,11 @@ class Player:
         for food in self.derenderingFood:
             food.undrawFood()
             self.derenderingFood.remove(food)
+
+        # Undraw based on life count
+        if self.life != 3:
+            print(self.life)
+            self.lifeImages[self.life].undraw()
 
         # Update animation only if the player hasnt collided with anything
         if self.lastFrameTime + self.animationDelay < time.time():
