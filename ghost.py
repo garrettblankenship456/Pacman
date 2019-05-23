@@ -161,7 +161,7 @@ class Ghost(object):
             self.alive = True
             self.scared = False
             self.ghostPathIndex = 0
-            self.lastTime = time.time() - 321312412
+            self.lastTime = time.time() - 16
 
             # Move it all
             self.boundingBox.move(toX, toY)

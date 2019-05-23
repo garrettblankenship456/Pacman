@@ -86,7 +86,6 @@ def main():
 
     # Start thread
     physThread = threading.Thread(target=physLoop, args=(player, world, ghosts))
-    physThread.start()
 
     # Main loop
     while True:
@@ -97,6 +96,7 @@ def main():
             window.getKey()
             gameState = 1
             startMenu.undraw()
+            physThread.start()
         elif gameState == 1:
             # Update score value
             score.setText(int(player.score))
