@@ -39,8 +39,8 @@ class World:
 
             # Get XY from points
             pointData = points[0].split(",")
-            xPos = (float(pointData[0]) + 2) * config.MAP_RESOLUTION_X
-            yPos = (float(pointData[1]) + config.MAP_OFFSET_Y) * config.MAP_RESOLUTION_Y
+            xPos = (float(pointData[0]) + 2) * 9 - 6
+            yPos = (float(pointData[1]) + config.MAP_OFFSET_Y) * 9 - 6
 
             # Get type
             type = ""

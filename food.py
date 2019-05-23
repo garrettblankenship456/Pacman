@@ -1,13 +1,17 @@
 from graphics import *
 class Food(object):
-    def __init__(self, x, y, color, activeColor, window):
+    def __init__(self, x, y, color, activeColor, powerpellet, window):
         self.x = x
         self.y = y
         self.color = color
         self.active = activeColor
         self.window = window
-        self.powerpellet = False
-        self.f = Rectangle(Point(self.x, self.y), Point(self.x + 12, self.y + 12))
+        self.powerpellet = powerpellet
+
+        if powerpellet == False:
+            self.f = Rectangle(Point(self.x + 2, self.y + 2), Point(self.x + 10, self.y + 10))
+        else:
+            self.f = Rectangle(Point(self.x - 2, self.y - 2), Point(self.x + 14, self.y + 14))
         self.drawFood()
     def drawFood(self):
         self.f.setFill(self.color)

@@ -21,11 +21,17 @@ def main():
     world.render(window)
 
     # Initialize game state
+    global gameState
     gameState = 0 # 0 = Main menu, 1 = Gameplay, 2 = End game
 
     # Initialize scene objects
     # Player
-    player = Player(window, world)
+    def win():
+        # Controls win condition
+        global gameState
+        gameState = 2
+
+    player = Player(window, world, win)
     dead = False
 
     # Create ghosts
@@ -41,15 +47,16 @@ def main():
     score.setTextColor("white")
     score.draw(window)
     startMenu = Image(Point(config.WINDOW_WIDTH / 2, config.WINDOW_HEIGHT / 2), "images/menu.jpg")
-    #endScreen = Image(Point(config.WINDOW_WIDTH / 2, config.WINDOW_HEIGHT / 2), "images/end.png")
+    endScreen = Image(Point(config.WINDOW_WIDTH / 2, config.WINDOW_HEIGHT / 2), "images/end.png")
 
     # Physics loop
     def physLoop(player, world, ghosts):
         """Updates the physics for everything, its a function for the seperate thread"""
+        global gameState
         timeStep = 90 / 10000
         previous = time.time()
         lag = 0
-        while True:
+        while gameState != 2:
             current = time.time()
             elapsed = current - previous
             previous = current
@@ -70,7 +77,7 @@ def main():
                     pinky.update(player, world, 0.01)
 
                 lag -= timeStep
-                sleep(0.001)
+            sleep(0.0001)
 
     # Start thread
     physThread = threading.Thread(target=physLoop, args=(player, world, ghosts))
@@ -115,6 +122,7 @@ def main():
             elif dead == True:
                 sleep(1)
                 gameState = 2
+                physThread.join()
                 continue
 
             # Render ghosts
@@ -128,6 +136,8 @@ def main():
             player.render(window)
             window.update()
         elif gameState == 2:
+            sleep(1)
+            endScreen.draw(window)
             window.getKey()
             break
 

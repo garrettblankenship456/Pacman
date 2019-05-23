@@ -10,7 +10,7 @@ from food import *
 
 # Class defintion
 class Player:
-    def __init__(self, window, world, size = 39.5):
+    def __init__(self, window, world, winCallback, size = 39.5):
         # Starting positions
         startX = config.WINDOW_WIDTH / 2 - 15
         startY = 525
@@ -40,11 +40,7 @@ class Player:
         for square in world.squares:
             f2 = None
 
-            if square.type == True:
-                f2 = Food(square.pos.getX(), square.pos.getY(), "orange", "blue", window)
-                f2.powerpellet = True
-            else:
-                f2 = Food(square.pos.getX(), square.pos.getY(), "yellow", "blue", window)
+            f2 = Food(square.pos.getX(), square.pos.getY(), "yellow", "blue", square.type, window)
 
             self.foodlist.append(f2)
 
@@ -62,6 +58,8 @@ class Player:
         self.box.move(startX, startY)
         for p in self.images:
             p.move(startX + size / 2, startY + size / 2)
+
+        self.winCallback = winCallback
 
     def draw(self, window):
         """Draws player to the screen"""
@@ -213,7 +211,8 @@ class Player:
 
         if len(self.foodlist) == 0:
             print("Win")
-            self.alive = False
+            self.alive = True
+            self.winCallback()
             return True
 
         if self.alive == True:

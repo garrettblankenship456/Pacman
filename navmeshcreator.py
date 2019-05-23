@@ -11,10 +11,10 @@ def main():
     window.setBackground("green")
 
     # Draw trace image
-    #trace = Image(Point(config.WINDOW_WIDTH / 2, config.WINDOW_HEIGHT / 2), "images/photo11.png")
+    #trace = Image(Point(config.WINDOW_WIDTH / 2, config.WINDOW_HEIGHT / 2), "images/trace.png")
     #trace.draw(window)
 
-    clickPoint = Rectangle(Point(0, 0), Point(20, 20))
+    clickPoint = Rectangle(Point(0, 0), Point(8, 8))
     clickPoint.setFill("white")
     clickPoint.draw(window)
 
@@ -29,6 +29,8 @@ def main():
 
     config.MAP_OFFSET_Y = config.MAP_OFFSET_Y + w.nodeGrid.yPos
     config.MAP_OFFSET_X = config.MAP_OFFSET_X + w.nodeGrid.xPos
+    w.nodeGrid.xScale = 9
+    w.nodeGrid.xScale = 9
 
     # Main loop
     while True:
