@@ -114,7 +114,7 @@ class Ghost(object):
 
         if self.ghostPathIndex < len(self.path) or self.lastTracked == 0:
             notAlive = not self.alive
-            self.moveGhost(world, Point(self.path[self.ghostPathIndex].realPosX, self.path[self.ghostPathIndex].realPosY), (835 - (240 * self.scared) + (600 * notAlive)) * deltaTime)
+            self.moveGhost(world, Point(self.path[self.ghostPathIndex].realPosX, self.path[self.ghostPathIndex].realPosY), (835 - (240 * self.scared) + (440 * notAlive)) * deltaTime)
 
         if BoundingBox.pointWithin(self.boundingBox, BoundingBox(Point(self.path[self.ghostPathIndex].realPosX, self.path[self.ghostPathIndex].realPosY), Point(world.nodeGrid.xScale, world.nodeGrid.yScale))):
             self.ghostPathIndex += 1
@@ -161,7 +161,7 @@ class Ghost(object):
             self.alive = True
             self.scared = False
             self.ghostPathIndex = 0
-            self.lastTime = time.time() + 321312412
+            self.lastTime = time.time() - 321312412
 
             # Move it all
             self.boundingBox.move(toX, toY)

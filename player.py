@@ -72,6 +72,7 @@ class Player:
 
     def respawn(self):
         """Respawns the player"""
+        self.alive = False
         toPos = Point((config.WINDOW_WIDTH / 2 - 15) - self.boundingBox.pos.getX(), (525 - self.boundingBox.pos.getY()))
         self.boundingBox.move(toPos.getX(), toPos.getY())
 
@@ -195,6 +196,7 @@ class Player:
                         self.alive = True
                         break
                     else:
+                        self.alive = True
                         time.sleep(1)
                         self.respawn()
 
@@ -263,7 +265,6 @@ class Player:
 
         # Undraw based on life count
         if self.life != 3:
-            print(self.life)
             self.lifeImages[self.life].undraw()
 
         # Update animation only if the player hasnt collided with anything

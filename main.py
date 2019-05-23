@@ -29,7 +29,9 @@ def main():
     def win():
         # Controls win condition
         global gameState
+        sleep(1)
         gameState = 2
+        physThread.join()
 
     player = Player(window, world, win)
     dead = False
@@ -57,6 +59,9 @@ def main():
         previous = time.time()
         lag = 0
         while gameState != 2:
+            # Skip if the player is dead
+            if player.alive == True: continue
+
             current = time.time()
             elapsed = current - previous
             previous = current
@@ -98,14 +103,13 @@ def main():
 
             # Controls
             keys = window.checkKeys()
-            # Exit loop if escape pressed
-            if "Escape" in keys:
-                window.close()
+            # Exit loop if escape pressed or lives == 0
+            if "Escape" in keys or player.life == 0:
                 gameState = 2
                 continue
 
             # Player controls
-            if dead == False:
+            if player.alive == False:
                 if "w" in keys:
                     player.move('n')
                 if "s" in keys:
@@ -114,16 +118,6 @@ def main():
                     player.move('w')
                 if "d" in keys:
                     player.move('e')
-                if "x" in keys:
-                    blinky.scare()
-                    clyde.scare()
-                    inky.scare()
-                    pinky.scare()
-            elif dead == True:
-                sleep(1)
-                gameState = 2
-                physThread.join()
-                continue
 
             # Render ghosts
             blinky.render(window)
@@ -132,7 +126,6 @@ def main():
             pinky.render(window)
 
             # Update window and player
-            dead = player.alive
             player.render(window)
             window.update()
         elif gameState == 2:
