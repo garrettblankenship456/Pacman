@@ -19,6 +19,7 @@ class Grid:
         self.xExtents = xExtents
         self.yExtents = yExtents
         self.nodeList = []
+        self.window = window
 
         # Populate node list
         for i in range(xExtents):
@@ -102,10 +103,17 @@ class Grid:
             if lowestNode in neighbors:
                 reached = True
 
-                if reversed == True:
-                    path.reverse()
+                # Reconstruct a path
+                returnedPath = []
+                currentNode = lowestNode
+                while currentNode != startNode:
+                    returnedPath.append(currentNode)
+                    currentNode = currentNode.parent
 
-                return path
+                if reversed == False:
+                    returnedPath.reverse()
+
+                return returnedPath
                 break
             else:
                 # Go through all its neighbors

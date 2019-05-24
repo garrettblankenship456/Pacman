@@ -12,13 +12,17 @@ def main():
     window.setBackground("white")
 
     # Create grid
-    grid = Grid(-10, 5, 40, 40, 19, 19, None)
+    grid = Grid(-10, 5, 40, 40, 20, 20, None, window)
     #grid.drawGrid(window)
 
     # Add nodes to the grid and draw them
+    for i in range(0, 19):
+        for x in range(0, 19):
+            grid.setWall(x, i, False)
+
     for i in range(0, 18):
-        grid.setWall(6, i, True)
-    #grid.setWall(7, 15, True)
+        grid.setWall(5, i, True)
+
     grid.drawNodes(window)
 
     # Test path find

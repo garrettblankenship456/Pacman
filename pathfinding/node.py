@@ -83,7 +83,7 @@ class Node:
                 break
 
     def debugDraw(self, window):
-        r = Rectangle(Point(self.gridX * 10 + 10, self.gridY * 10 - 5), Point(self.gridX * 10 + 10 + 10, self.gridY * 10 + 10 - 5))
+        r = Rectangle(Point(self.gridX * 40 - 10, self.gridY * 40 + 5), Point(self.gridX * 40 + 40 - 10, self.gridY * 40 + 40 + 5))
         r.setFill("orange")
         r.draw(window)
 

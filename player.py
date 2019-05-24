@@ -27,6 +27,7 @@ class Player:
         self.alive = False
         self.lastScared = 0
         self.collided = False
+        self.ghostCount = 1
 
         # Initialize life images
         self.lifeImages = [Image(Point(60, config.WINDOW_HEIGHT - 20), "images/directions/westFirst.png"),
@@ -211,8 +212,8 @@ class Player:
                         return 2
                 else: # They are scared so theyre worth points
                     if g.alive == True:
-                        print("Ghost eaten")
-                        self.score += 200
+                        self.score += 200 * self.ghostCount
+                        self.ghostCount += 1
                         g.respawn(world)
 
         if len(self.foodlist) == 0:
@@ -227,6 +228,7 @@ class Player:
         # Reset ghosts when scared timer is up
         if time.time() > self.lastScared + 7:
             for g in ghosts:
+                self.ghostCount = 1
                 g.scared = False
 
         # Move the box to the projected
