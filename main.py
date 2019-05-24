@@ -56,6 +56,7 @@ def main():
         """Updates the physics for everything, its a function for the seperate thread"""
         global gameState
         timeStep = 90 / 10000
+        startTime = time.time()
         previous = time.time()
         lag = 0
         while gameState != 2:
@@ -69,10 +70,10 @@ def main():
 
             while lag >= timeStep:
                 # Update player
-                player.update(world, ghosts)
+                if player.update(world, ghosts) == 2: startTime = time.time() # Makes the ghosts take time to start after respawn
 
                 # Enemy path finding
-                if time.time() > startTime + 0:
+                if time.time() > startTime + 1:
                     blinky.update(player, world, 0.01)
                 if time.time() > startTime + 10:
                     clyde.update(player, world, 0.01)
@@ -118,8 +119,6 @@ def main():
                     player.move('w')
                 if "d" in keys:
                     player.move('e')
-                if "x" in keys:
-                    blinky.scare()
 
             # Render ghosts
             blinky.render(window)
@@ -133,6 +132,13 @@ def main():
         elif gameState == 2:
             sleep(1)
             endScreen.draw(window)
+
+            # Display score text
+            score = Text(Point(config.WINDOW_WIDTH / 2, 600), "Score: " + str(player.score))
+            score.setSize(32)
+            score.setTextColor("white")
+            score.draw(window)
+
             window.getKey()
             break
 

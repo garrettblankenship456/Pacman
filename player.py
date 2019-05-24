@@ -25,6 +25,7 @@ class Player:
         self.score = 0
         self.life = 3 # Player has 3 lifes
         self.alive = False
+        self.lastScared = 0
 
         # Initialize life images
         self.lifeImages = [Image(Point(60, config.WINDOW_HEIGHT - 20), "images/directions/westFirst.png"),
@@ -167,6 +168,7 @@ class Player:
                     # Scare all the ghosts, its a power pellet
                     for g in ghosts:
                         g.scare()
+                        self.lastScared = time.time()
 
                 self.derenderingFood.append(i)
 
@@ -219,6 +221,11 @@ class Player:
 
         if self.alive == True:
             return True
+
+        # Reset ghosts when scared timer is up
+        if time.time() > self.lastScared + 7:
+            for g in ghosts:
+                g.scared = False
 
         # Move the box to the projected
         self.boundingBox.move(projected[0], projected[1])

@@ -30,13 +30,11 @@ class Ghost(object):
         self.scared = False
         self.alive = True
         self.firstTickScared = False
-        self.lastScared = 0
 
     def scare(self):
         """Scares the ghost"""
         if self.scared == False:
             self.scared = True
-            self.lastScared = time.time()
             self.firstTickScared = True
 
     def moveGhost(self, world, targetPos, multiplier = 1):
@@ -101,10 +99,6 @@ class Ghost(object):
                 # Make ghost to a random point
                 randNode = world.nodeGrid.randomNode()
                 self.path = world.nodeGrid.pathFind(world.nodeGrid.nodeList[ghostGridX][ghostGridY], randNode)
-
-                # End scared status
-                if time.time() > self.lastScared + 7:
-                    self.scared = False
             else:
                 try:
                     self.path = world.nodeGrid.pathFind(world.nodeGrid.nodeList[ghostGridX][ghostGridY], world.nodeGrid.nodeList[plyGridX][plyGridY])
