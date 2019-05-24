@@ -9,6 +9,8 @@ from player import *
 from ghost import *
 import time
 import threading
+from ghostPersonalities.inky import *
+from ghostPersonalities.clyde import *
 
 # Main function
 def main():
@@ -38,8 +40,8 @@ def main():
 
     # Create ghosts
     blinky = Ghost("blinky", Point(config.WINDOW_WIDTH / 2, 283), window)
-    clyde = Ghost("clyde", Point(config.WINDOW_WIDTH / 2 - 5, config.WINDOW_HEIGHT / 2 - 27), window)
-    inky = Ghost("inky", Point(config.WINDOW_WIDTH / 2, config.WINDOW_HEIGHT / 2 - 27), window)
+    clyde = Cylde("clyde", Point(config.WINDOW_WIDTH / 2 - 5, config.WINDOW_HEIGHT / 2 - 27), player, window)
+    inky = Inky("inky", Point(config.WINDOW_WIDTH / 2, config.WINDOW_HEIGHT / 2 - 27), blinky, window)
     pinky = Ghost("pinky", Point(config.WINDOW_WIDTH / 2 + 5, config.WINDOW_HEIGHT / 2 - 27), window)
     ghosts = (blinky, clyde, inky, pinky)
     startTime = time.time() # Time the ghost started, slow release
