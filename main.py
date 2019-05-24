@@ -70,7 +70,8 @@ def main():
 
             while lag >= timeStep:
                 # Update player
-                if player.update(world, ghosts) == 2: startTime = time.time() # Makes the ghosts take time to start after respawn
+                if player.update(world, ghosts) == 2:
+                    startTime = time.time() # Makes the ghosts take time to start after respawn
 
                 # Enemy path finding
                 if time.time() > startTime + 1:
@@ -97,6 +98,17 @@ def main():
             window.getKey()
             gameState = 1
             startMenu.undraw()
+
+            # Draw ready text
+            ready = Text(Point(config.WINDOW_WIDTH / 2, 410), "READY!")
+            ready.setSize(24)
+            ready.setStyle("bold")
+            ready.setTextColor("yellow")
+            ready.draw(window)
+            update()
+            sleep(1) # Let player see the game start
+            ready.undraw()
+
             physThread.start()
         elif gameState == 1:
             # Update score value

@@ -26,6 +26,7 @@ class Player:
         self.life = 3 # Player has 3 lifes
         self.alive = False
         self.lastScared = 0
+        self.collided = False
 
         # Initialize life images
         self.lifeImages = [Image(Point(60, config.WINDOW_HEIGHT - 20), "images/directions/westFirst.png"),
@@ -142,6 +143,7 @@ class Player:
 
         # Check collision based on projected position
         collision, box = world.isCollided(self.projectedBox)
+        self.collided = collision # Used to stop advancing frames
 
         if collision:
             # Get intersection
@@ -275,7 +277,7 @@ class Player:
             self.lifeImages[self.life].undraw()
 
         # Update animation only if the player hasnt collided with anything
-        if self.lastFrameTime + self.animationDelay < time.time():
+        if self.lastFrameTime + self.animationDelay < time.time() and self.collided == False:
             self.frame = not self.frame
             self.lastFrameTime = time.time()
 
