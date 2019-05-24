@@ -34,9 +34,10 @@ class Ghost(object):
 
     def scare(self):
         """Scares the ghost"""
-        self.scared = True
-        self.lastScared = time.time()
-        self.firstTickScared = True
+        if self.scared == False:
+            self.scared = True
+            self.lastScared = time.time()
+            self.firstTickScared = True
 
     def moveGhost(self, world, targetPos, multiplier = 1):
         projected = [0, 0]
@@ -165,3 +166,6 @@ class Ghost(object):
 
             # Move it all
             self.boundingBox.move(toX, toY)
+
+            # After moving retrack
+            self.firstTickScared = True

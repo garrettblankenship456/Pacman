@@ -118,6 +118,8 @@ def main():
                     player.move('w')
                 if "d" in keys:
                     player.move('e')
+                if "x" in keys:
+                    blinky.scare()
 
             # Render ghosts
             blinky.render(window)
