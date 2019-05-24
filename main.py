@@ -33,7 +33,6 @@ def main():
         global gameState
         sleep(1)
         gameState = 2
-        physThread.join()
 
     player = Player(window, world, win)
     dead = False
