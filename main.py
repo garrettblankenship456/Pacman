@@ -155,7 +155,6 @@ def main():
             break
 
     # Graceful exit
-    physThread.join()
     window.close()
 
 
