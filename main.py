@@ -12,6 +12,13 @@ import threading
 from ghostPersonalities.inky import *
 from ghostPersonalities.clyde import *
 
+# Import win sound, or try to, if failed dont use it
+soundEnabled = True
+try:
+    import winsound
+except:
+    soundEnabled = False
+
 # Main function
 def main():
     # Initialize window
@@ -49,7 +56,7 @@ def main():
     score = Text(Point(config.WINDOW_WIDTH / 2, 25), "00")
     score.setTextColor("white")
     score.draw(window)
-    startMenu = Image(Point(config.WINDOW_WIDTH / 2, config.WINDOW_HEIGHT / 2), "images/menu.jpg")
+    startMenu = Image(Point(config.WINDOW_WIDTH / 2, config.WINDOW_HEIGHT / 2), "images/menu.png")
     endScreen = Image(Point(config.WINDOW_WIDTH / 2, config.WINDOW_HEIGHT / 2), "images/end.png")
 
     # Physics loop
@@ -107,7 +114,13 @@ def main():
             ready.setTextColor("yellow")
             ready.draw(window)
             update()
-            sleep(1) # Let player see the game start
+
+            # Play the sound for the intro if sound is enabled
+            if soundEnabled:
+                winsound.PlaySound("sounds/intro.wav", winsound.SND_FILENAME)
+            else:
+                sleep(1) # Let player see the game start
+
             ready.undraw()
 
             physThread.start()

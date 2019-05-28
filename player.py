@@ -7,6 +7,14 @@ import config
 from boundingbox import *
 import math
 from food import *
+import threading
+
+# Import win sound, or try to, if failed dont use it
+soundEnabled = True
+try:
+    import winsound
+except:
+    soundEnabled = False
 
 # Class defintion
 class Player:
@@ -19,8 +27,8 @@ class Player:
         self.box = Rectangle(Point(0, 0), Point(size, size))
         self.boundingBox = BoundingBox(Point(startX, startY), Point(size, size))
         self.projectedBox = BoundingBox(Point(startX, startY), Point(size, size))
-        self.direction = "e"
-        self.nextDirection = "e"
+        self.direction = "n"
+        self.nextDirection = "n"
         self.movmentSpeed = 1
         self.score = 0
         self.life = 3 # Player has 3 lifes
@@ -78,6 +86,8 @@ class Player:
         self.alive = False
         toPos = Point((config.WINDOW_WIDTH / 2 - 15) - self.boundingBox.pos.getX(), (525 - self.boundingBox.pos.getY()))
         self.boundingBox.move(toPos.getX(), toPos.getY())
+        self.direction = "n"
+        self.nextDirection = "n"
 
     def update(self, world, ghosts):
         """Updates the player"""
@@ -191,6 +201,10 @@ class Player:
                 if g.scared == False:
                     # Count down
                     self.life -= 1
+
+                    # Play death sound if sound has been enabled
+                    if soundEnabled:
+                        winsound.PlaySound("sounds/death.wav", winsound.SND_FILENAME)
 
                     # Close game if less than 3 lifes
                     if self.life < 1:
