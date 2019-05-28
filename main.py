@@ -57,6 +57,7 @@ def main():
     score.setTextColor("white")
     score.draw(window)
     startMenu = Image(Point(config.WINDOW_WIDTH / 2, config.WINDOW_HEIGHT / 2), "images/menu.png")
+    infoText = Text(Point(config.WINDOW_WIDTH / 2, 670), "Press any key to start...")
     endScreen = Image(Point(config.WINDOW_WIDTH / 2, config.WINDOW_HEIGHT / 2), "images/end.png")
 
     # Physics loop
@@ -103,9 +104,12 @@ def main():
         if gameState == 0:
             # Check for key input
             startMenu.draw(window)
+            infoText.draw(window)
+            infoText.setTextColor("white")
             window.getKey()
             gameState = 1
             startMenu.undraw()
+            infoText.undraw()
 
             # Draw ready text
             ready = Text(Point(config.WINDOW_WIDTH / 2, 410), "READY!")
